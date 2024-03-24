@@ -1,0 +1,5 @@
+objs
+ircserv
+.vscode
+.DS_Store
+*.o
