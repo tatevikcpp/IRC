@@ -30,13 +30,13 @@ void    Join::execute(Client* client, std::vector<std::string> args)
 
   if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
   {
-		client->reply(ERR_CHANNELISFULL(client->getNick(), name));
+		client->reply(ERR_CHANNELISFULL(client->getNICK(), name));
 		return;
 	}
 
   if (channel->get_pass() != pass) 
   {
-		client->reply(ERR_BADCHANNELKEY(client->getNick(), name));
+		client->reply(ERR_BADCHANNELKEY(client->getNICK(), name));
 		return;
 	}
 

@@ -242,6 +242,18 @@ void Client::splitbuffer(void)
 
 
 
+/* void            Client::write(const std::string& message) const 
+{
+    std::string buffer = message + "\r\n";
+    if (send(_fd, buffer.c_str(), buffer.length(), 0) < 0)
+        throw std::runtime_error("Error while sending a message to a client!");
+}
+
+void            Client::reply(const std::string& reply)
+{
+    this->write(":" + get_prefix() + " " + reply);
+} */
+
 // LA ~ LA ~ LA ~ LA ~ LA ~ LA 
 
 
@@ -250,7 +262,7 @@ void Client::reply(const std::string& reply) // TODO kisat!
     // (void)reply;
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
 
-    if (send(_fd, buff.c_str(), buff.length(), 0) == -1)
+    if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
         std::cerr << "Error: can't send message to client." << std::endl;
 }
 
@@ -290,10 +302,37 @@ Channel * Client::getChannel(const std::string& nick)
 }
 
 
-void Client::joinToChannel(Channel *chanel)
+void Client::joinToChannel(Channel *channel)
 {
-    this->_channels.insert()
-    chanel->joinClient(this);
+
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_clients.find(channel->getName());
+    if (it != this->_clients,end())
+    {
+        // if (channel->_clients.empty())
+        channel->joinClient(this);
+        this->_clients.insert()
+        
+    }
+    // std::string users = "";
+    // std::vector<std::string> nicknames = channel->get_nicknames();
+    // std::vector<std::string>::iterator it_b = nicknames.begin();
+    // std::vector<std::string>::iterator it_e = nicknames.end();
+    // while (it_b != it_e)
+    // {
+    //     users.append(*it_b + " ");
+    //     it_b++;
+    // }
+
+    // Send replies
+    
+    reply(RPL_NAMREPLY(_nickname, channel->getName(), users));
+    reply(RPL_ENDOFNAMES(_nickname, channel->getName()));
+    // channel->broadcast(RPL_JOIN(get_prefix(), channel->getName()));
+
+    // log
+
+    std::string message = _nickname + " has joined to the channel " + channel->getName();
+    log(message);
 }
 
 
