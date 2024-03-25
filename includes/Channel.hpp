@@ -24,6 +24,8 @@ class Channel
         size_t get_size()const;
         std::string get_pass() const;
 
+        std::string getName(void);
+
     private:
         std::map<int, Client *> _clients;
         std::set<std::string> _admins;

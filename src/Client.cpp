@@ -56,7 +56,7 @@ std::string Client::getPASS(void)
 
 void Client::setNICK(const std::string& nick) // TODO sending??
 {
-    this->_nick = nick;
+    this->_nick = nick;  
 }
 
 void Client::setUSER(const std::string& username, const std::string& realname)
@@ -73,7 +73,7 @@ Channel* Client::createChannel(const std::string& name, const std::string& pass)
     {
         return (NULL);
     }
-    Channel *tmp = new Channel(name, this, pass);
+    Channel *tmp = new Channel(name, pass, this);
     this->_channels[name] = std::make_pair(tmp, Owner);
     return (tmp);
 }
@@ -115,7 +115,7 @@ std::string     trim(const std::string& str)
 
 
 
-std::vector<std::string> split(std::string s, std::string delimiter) 
+std::vector<std::string> split(std::string s, std::string delimiter)
 {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     std::string token;
@@ -279,6 +279,22 @@ std::string Client::getPrefix(void)
 
 
 
+Channel * Client::getChannel(const std::string& nick)
+{
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(nick);
+    if (it == this->_channels.end())
+    {
+        return (NULL);
+    }
+    return (it->second.first);
+}
+
+
+void Client::joinToChannel(Channel *chanel)
+{
+    this->_channels.insert()
+    chanel->joinClient(this);
+}
 
 
 

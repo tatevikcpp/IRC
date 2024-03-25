@@ -10,17 +10,17 @@ void    Join::execute(Client* client, std::vector<std::string> args)
 {
     if (args.empty())
     {
-        client->reply(ERR_NEEDMOREPARAMS(client->getNick(), "JOIN"));
+        client->reply(ERR_NEEDMOREPARAMS(client->getNICK(), "JOIN"));
         return;
     }
 
     std::string name = args[0];
     std::string pass = args.size() > 1 ? args[1] : "";
 
-  Channel *channel = client->getChannel();
+  Channel *channel = client->getChannel(client->getNICK());
 	if (channel) 
   {
-		client->reply(ERR_TOOMANYCHANNELS(client->getNick(), name));
+		client->reply(ERR_TOOMANYCHANNELS(client->getNICK(), name));
 		return;
 	}
 
@@ -34,7 +34,7 @@ void    Join::execute(Client* client, std::vector<std::string> args)
 		return;
 	}
 
-  if (channel->get_key() != pass) 
+  if (channel->get_pass() != pass) 
   {
 		client->reply(ERR_BADCHANNELKEY(client->getNick(), name));
 		return;

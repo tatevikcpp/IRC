@@ -34,13 +34,15 @@ class Client
         void leaveChannel(const std::string& name);
         Channel* createChannel(const std::string& name, const std::string& pass = "");
         bool isRegistered(void);
-        // std::string getNick(void);
+    
         void setNICK(const std::string& nick);
-        std::string getNICK(void);
+        std::string getNICK(void) const;
+
         void setPASS(const std::string& pass);
         std::string getPASS(void);
+
         void setUSER(const std::string& username, const std::string& realname);
-        // void checkForRegistered(void);
+   
         bool checkForRegistered(void);
         void splitbuffer(void);
 
@@ -56,7 +58,12 @@ class Client
         void reply(const std::string& reply);
         
         std::string getCommand(void);
+        // std::string get_nickname() const;
 
+        Channel * getChannel(const std::string& nick); // TODO sa ardyoq sebc piti lini?
+
+        void jionToChannel(Channel *channel);
+        
         int getFd(void);
         
         std::string _buffer;

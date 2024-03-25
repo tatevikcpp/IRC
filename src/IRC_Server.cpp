@@ -134,10 +134,10 @@ void IRC_Server::addClientToChannel(const std::string& name, Client *client)
 }
 
 
-Channel* Server::createChannel(const std::string& name, const std::string& pass, Client *client)
+Channel* IRC_Server::createChannel(const std::string& name, const std::string& pass, Client *client)
 {
     Channel *new_channel = new Channel(name, pass, client);
-    this->_channels.insert(new_channel);
+    this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
     return (new_channel);
 }
 

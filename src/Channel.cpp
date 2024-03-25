@@ -16,19 +16,19 @@ Channel::~Channel()
 
 void Channel::joinClient(Client *client)
 {
-    this->_client[client->_fd] = client;
+    this->_clients[client->_fd] = client;
 }
 
 void Channel::deleteClient(Client &client)
 {
-    this->_client.erase(client._fd);
+    this->_clients.erase(client._fd);
 }
 
 void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */)
 {
-    std::map<int, Client *>::const_iterator it = this->_client.cbegin(); // TODO nayel !!
+    std::map<int, Client *>::const_iterator it = this->_clients.cbegin(); // TODO nayel !!
 
-    while (it != this->_client.cend())
+    while (it != this->_clients.cend())
     {
         if (C->_fd != it->first)
         {
@@ -43,7 +43,7 @@ void Channel::sending(Client* C, const std::string& msg/* , const std::string& c
 
 bool Channel::emptyChannel(void)
 {
-    return (this->_client.empty());
+    return (this->_clients.empty());
 }
 
 
@@ -60,4 +60,10 @@ size_t Channel::get_size() const
 std::string Channel::get_pass() const
 {
     return (this->_pass);
+}
+
+
+std::string Channel::getName(void)
+{
+    return (this->_name);
 }
