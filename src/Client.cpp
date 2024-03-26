@@ -266,7 +266,7 @@ void Client::reply(const std::string& reply) // TODO kisat!
         std::cerr << "Error: can't send message to client." << std::endl;
 }
 
-std::string Client::getNICK(void)
+std::string Client::getNICK(void) const
 {
     return (this->_nick);
 }
@@ -291,9 +291,9 @@ std::string Client::getPrefix(void)
 
 
 
-Channel * Client::getChannel(const std::string& nick)
+Channel * Client::getChannel(const std::string& name)
 {
-    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(nick);
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
     if (it == this->_channels.end())
     {
         return (NULL);
@@ -302,37 +302,23 @@ Channel * Client::getChannel(const std::string& nick)
 }
 
 
-void Client::joinToChannel(Channel *channel)
+void Client::jionToChannel(Channel *channel) //TODO  hery chanicel :D
 {
 
-    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_clients.find(channel->getName());
-    if (it != this->_clients,end())
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel->getName());
+    if (it != this->_channels.end())
     {
         // if (channel->_clients.empty())
         channel->joinClient(this);
-        this->_clients.insert()
+        // this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel->getName(), (channel, ))) //TODO
         
     }
-    // std::string users = "";
-    // std::vector<std::string> nicknames = channel->get_nicknames();
-    // std::vector<std::string>::iterator it_b = nicknames.begin();
-    // std::vector<std::string>::iterator it_e = nicknames.end();
-    // while (it_b != it_e)
-    // {
-    //     users.append(*it_b + " ");
-    //     it_b++;
-    // }
 
     // Send replies
     
-    reply(RPL_NAMREPLY(_nickname, channel->getName(), users));
-    reply(RPL_ENDOFNAMES(_nickname, channel->getName()));
+    // reply(RPL_NAMREPLY(_nickname, channel->getName(), users));
+    // reply(RPL_ENDOFNAMES(_nickname, channel->getName()));
     // channel->broadcast(RPL_JOIN(get_prefix(), channel->getName()));
-
-    // log
-
-    std::string message = _nickname + " has joined to the channel " + channel->getName();
-    log(message);
 }
 
 

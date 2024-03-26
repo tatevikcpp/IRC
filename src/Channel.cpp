@@ -24,7 +24,7 @@ void Channel::deleteClient(Client &client)
     this->_clients.erase(client._fd);
 }
 
-void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */)
+void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */) //TODO
 {
     std::map<int, Client *>::const_iterator it = this->_clients.cbegin(); // TODO nayel !!
 
@@ -32,10 +32,8 @@ void Channel::sending(Client* C, const std::string& msg/* , const std::string& c
     {
         if (C->_fd != it->first)
         {
-            if (send(it->first, msg.c_str(), msg.size(), 0) == -1)
-            {
-
-            }
+            if (send(it->first, msg.c_str(), msg.size(), 0) < 0)
+                throw std::runtime_error("Error while sending a message to a client!");
         }
         it++;
     }
@@ -66,4 +64,28 @@ std::string Channel::get_pass() const
 std::string Channel::getName(void)
 {
     return (this->_name);
+}
+
+
+void Channel::broadcast(const std::string& message)
+{
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+    for (; it != this->_clients.end(); it++)
+    {
+        it->second->reply(message);
+    }
+}
+
+void Channel::broadcast(const std::string& message, Client* exclude)
+{
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+    for (; it != this->_clients.end(); it++)
+    {
+        if (it->second == exclude)
+        {
+            ++it;
+            continue;
+        }
+        it->second->reply(message);
+    }
 }

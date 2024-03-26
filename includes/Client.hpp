@@ -60,7 +60,7 @@ class Client
         std::string getCommand(void);
         // std::string get_nickname() const;
 
-        Channel * getChannel(const std::string& nick); // TODO sa ardyoq sebc piti lini?
+        Channel * getChannel(const std::string& name); // TODO sa ardyoq sebc piti lini?
 
         void jionToChannel(Channel *channel);
         

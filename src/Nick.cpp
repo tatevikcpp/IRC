@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Nick::Nick(Server* srv, bool auth) : Command(srv, auth) {}
+Nick::Nick(IRC_Server* srv, bool auth) : Command(srv, auth) {}
 
 Nick::~Nick() {}
 

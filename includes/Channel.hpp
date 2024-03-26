@@ -26,6 +26,9 @@ class Channel
 
         std::string getName(void);
 
+        void broadcast(const std::string& message);
+        void broadcast(const std::string& message, Client* exclude);
+
     private:
         std::map<int, Client *> _clients;
         std::set<std::string> _admins;

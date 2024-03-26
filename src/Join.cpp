@@ -26,7 +26,7 @@ void    Join::execute(Client* client, std::vector<std::string> args)
 
   channel = _srv->getChannel(name); //TODO nayel !!
 	if (!channel)
-		channel = _srv->create_channel(name, pass, client);
+		channel = _srv->createChannel(name, pass, client);
 
   if (channel->get_limit() > 0 && channel->get_size() >= channel->get_limit())
   {
@@ -40,5 +40,5 @@ void    Join::execute(Client* client, std::vector<std::string> args)
 		return;
 	}
 
-	client->join(channel);
+	client->jionToChannel(channel);
 }

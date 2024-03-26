@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-User::User(Server* srv, bool auth) : Command(srv, auth) {}
+User::User(IRC_Server* srv, bool auth) : Command(srv, auth) {}
 
 User::~User() {}
 

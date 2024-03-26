@@ -14,6 +14,6 @@ void    Quit::execute(Client* client, std::vector<std::string> args)
     if (reason.at(0) == ':')
         reason = reason.substr(1);
 
-    client->write(RPL_QUIT(client->get_prefix(), reason));
-	_srv->on_client_disconnect(client->get_fd());
+    client->reply(RPL_QUIT(client->getPrefix(), reason));
+	// _srv->on_client_disconnect(client->getFd()); // TODO offff
 }

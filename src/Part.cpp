@@ -15,13 +15,13 @@ void    Part::execute(Client* client, std::vector<std::string> args)
     }
 
     std::string name = args[0];
-    Channel     *channel = _srv->get_channel(name);
+    Channel     *channel = _srv->getChannel(name);
 
-    if (!channel || !client->getChannel() || client->getChannel()->getName() != name)
+    if (!channel || !client->getChannel(name) /* || client->getChannel()->getName() != name */)
     {
         client->reply(ERR_NOSUCHCHANNEL(client->getNICK(), name));
         return;
     }
 
-    client->leaveChannel(); // TODO im function-y nayel 
+    client->leaveChannel(name); // TODO im function-y nayel 
 }
