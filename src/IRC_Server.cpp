@@ -27,16 +27,16 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _s_addr.sin_addr.s_addr = INADDR_ANY;
 
     _commands["PASS"] = new Pass(this, false);
-    // _commands["NICK"] = new Nick(*this, false);
-    // _commands["USER"] = new User(*this, false);
+    _commands["NICK"] = new Nick(this, false);
+    _commands["USER"] = new User(this, false);
     // _commands["QUIT"] = new Quit(*this, false);
 
-    // _commands["PING"] = new Ping(*this);
-    // _commands["PONG"] = new Pong(*this);
-    // _commands["JOIN"] = new Join(*this);
-    // _commands["PART"] = new Part(*this);
-    // _commands["KICK"] = new Kick(*this);
-    // _commands["MODE"] = new Mode(*this);
+    _commands["PING"] = new Ping(this);
+    _commands["PONG"] = new Pong(this);
+    _commands["JOIN"] = new Join(this);
+    _commands["PART"] = new Part(this);
+    // _commands["KICK"] = new Kick(this);
+    // _commands["MODE"] = new Mode(this);
 
 	// _commands["PRIVMSG"] = new PrivMsg(*this);
 	// _commands["NOTICE"] = new Notice(*this);
@@ -314,7 +314,7 @@ int IRC_Server::start(void)
                     else
                     {
                         std::cout << "sending message" << std::endl;
-                        it->second->_buffer = (buf); // TODO review
+                        it->second->_buffer.assign(buf, nbytes); // TODO review
                         // int i = 0;
                         // while(buf[i])
                         // {

@@ -1,11 +1,24 @@
 #include "Client.hpp"
 #include <netinet/in.h>
+#include <sstream>
+
+// void *get_in_addr(struct sockaddr *sa)
+// {
+//     if (sa->sa_family == AF_INET)
+//         return &(((struct sockaddr_in*)sa)->sin_addr);
+//     return &(((struct sockaddr_in6*)sa)->sin6_addr);
+// }
 
 Client::Client(int fd, const struct sockaddr& addr) : _fd(fd)
 {
     this->_clientAddr = addr;
     this->_registered = false;
 }
+
+// std::string Client::getRemoteAddr() const
+// {
+//     return (inet_ntoa((struct sockaddr_in)_clientAddr.sin_addr));
+// }
 
 Client::~Client()
 {
@@ -113,24 +126,52 @@ std::string     trim(const std::string& str)
     return result;
 }
 
-
-
-std::vector<std::string> split(std::string s, std::string delimiter)
+std::vector<std::string> split(std::string const &input) // TODO hamozvel vor isspace ova ashxatum
 {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
+    std::istringstream buffer(input);
+    std::vector<std::string> ret;
 
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) 
-    {
-        token = s.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
-    }
-
-    res.push_back (s.substr (pos_start));
-    return res;
+    std::copy(std::istream_iterator<std::string>(buffer), 
+              std::istream_iterator<std::string>(),
+              std::back_inserter(ret));
+    return ret;
 }
+
+
+// std::vector<std::string> split(std::string s, std::string delimiter)
+// {
+//     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+//     std::string token;
+//     std::vector<std::string> res;
+
+//     while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) 
+//     {
+//         token = s.substr (pos_start, pos_end - pos_start);
+//         pos_start = pos_end + delim_len;
+//         res.push_back (token);
+//     }
+
+//     res.push_back (s.substr (pos_start));
+//     return res;
+// }
+
+// std::vector<std::string> split(std::string s)
+// {
+//     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+//     std::string token;
+//     std::vector<std::string> res;
+//     std::stream
+
+//     while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) 
+//     {
+//         token = s.substr (pos_start, pos_end - pos_start);
+//         pos_start = pos_end + delim_len;
+//         res.push_back (token);
+//     }
+
+//     res.push_back (s.substr (pos_start));
+//     return res;
+// }
 
 std::string Client::getCommand(void)
 {
@@ -141,70 +182,82 @@ void Client::setArguments(void)
 {
     _arguments.clear();
     _command.clear();
-    if (!this->_vecBuffer.empty())
+    if (!this->_vecBuffer.empty() && !this->_vecBuffer[0].empty())
     {
-        std::string str(this->_vecBuffer.front());
-        std::string delimiter = " "; // TODO avelacnel
-        std::size_t end = 0;
-        std::size_t i = 0;
-
-        i = str.find(delimiter);
-        std::cout << "hajox\n";
-        if (i != std::string::npos)
-        {
-            std::cout << "barev\n";
-            this->_command = str.substr(0, i);
-            // std::cout << " his->_command = "<< this->_command << std::endl;
-            str = str.substr(i);
-        }
-
-        i = 0;
-        if (!str.empty())
-        {
-            // while (str[i] && str[i] == ' ')
-            // while (str[i] && str[i] <= 32)
-            //     i++;
-            // if (end != std::string::npos)
-            //     std::cout << "end != std::string::npos" << std::endl;
-            // else
-            //     std::cout << "end ==== std::string::npos" << std::endl;
-            end = str.find(delimiter, i);
-            while (end != std::string::npos)
-            {
-                while (str[i] && str[i] <= 32)
-                    i++;
-                if (str[i] && str[i] == ':') // TODO
-                {
-                    std::cout << "::= ['@' <tags> SPACE] [':' <source> SPACE] <command> <parameters> <crlf>" << std::endl;
-                    break ;
-                }
-                // std::cout << "str = " << "'" << str[i] << "'" << std::endl;
-                if (str[i])
-                {
-                    // std::cout << "str: " << str.substr(i, end - i) << std::endl;
-                    this->_arguments.push_back(str.substr(i, end - i));
-                //     if (!_arguments.empty())
-                //     {
-                //         std::vector<std::string>::iterator it = _arguments.begin();
-                //         for (; it != _arguments.end(); ++it)
-                //             std::cout << " VECTOR IS: " << *it << " ";
-                // // std::cout << "count" << std::endl;
-                //     }
-                //     else
-                //         std::cout << "_arguments SET  is empty" << std::endl;
-                }
-                i = end + 1;
-                // while (str[i] && str[i] == ' ')
-                while (str[i] && str[i] <= 32)
-                    i++;
-                end = str.find(delimiter, i);
-            }
-        }
-        // this->_vecBuffer.pop_front();
-        // vec.erase(vec.begin());
-        this->_vecBuffer.erase(_vecBuffer.begin());
+        std::vector<std::string> splitedVec = split(_vecBuffer[0]);
+        _command = splitedVec[0];
+        _arguments = std::vector<std::string>(splitedVec.begin() + 1, splitedVec.end());
     }
 }
+
+// void Client::setArguments(void)
+// {
+//     _arguments.clear();
+//     _command.clear();
+//     if (!this->_vecBuffer.empty())
+//     {
+//         std::string str(this->_vecBuffer.front());
+//         std::string delimiter = " "; // TODO avelacnel
+//         std::size_t end = 0;
+//         std::size_t i = 0;
+
+//         i = str.find(delimiter);
+//         std::cout << "hajox\n";
+//         if (i != std::string::npos)
+//         {
+//             std::cout << "barev\n";
+//             this->_command = str.substr(0, i);
+//             // std::cout << " his->_command = "<< this->_command << std::endl;
+//             str = str.substr(i);
+//         }
+
+//         i = 0;
+//         if (!str.empty())
+//         {
+//             // while (str[i] && str[i] == ' ')
+//             // while (str[i] && str[i] <= 32)
+//             //     i++;
+//             // if (end != std::string::npos)
+//             //     std::cout << "end != std::string::npos" << std::endl;
+//             // else
+//             //     std::cout << "end ==== std::string::npos" << std::endl;
+//             end = str.find(delimiter, i);
+//             while (end != std::string::npos)
+//             {
+//                 while (str[i] && str[i] <= 32)
+//                     i++;
+//                 if (str[i] && str[i] == ':') // TODO
+//                 {
+//                     std::cout << "::= ['@' <tags> SPACE] [':' <source> SPACE] <command> <parameters> <crlf>" << std::endl;
+//                     break ;
+//                 }
+//                 // std::cout << "str = " << "'" << str[i] << "'" << std::endl;
+//                 if (str[i])
+//                 {
+//                     // std::cout << "str: " << str.substr(i, end - i) << std::endl;
+//                     this->_arguments.push_back(str.substr(i, end - i));
+//                 //     if (!_arguments.empty())
+//                 //     {
+//                 //         std::vector<std::string>::iterator it = _arguments.begin();
+//                 //         for (; it != _arguments.end(); ++it)
+//                 //             std::cout << " VECTOR IS: " << *it << " ";
+//                 // // std::cout << "count" << std::endl;
+//                 //     }
+//                 //     else
+//                 //         std::cout << "_arguments SET  is empty" << std::endl;
+//                 }
+//                 i = end + 1;
+//                 // while (str[i] && str[i] == ' ')
+//                 while (str[i] && str[i] <= 32)
+//                     i++;
+//                 end = str.find(delimiter, i);
+//             }
+//         }
+//         // this->_vecBuffer.pop_front();
+//         // vec.erase(vec.begin());
+//         this->_vecBuffer.erase(_vecBuffer.begin());
+//     }
+// }
 
 std::vector<std::string> Client::getArguments(void)
 {

@@ -46,7 +46,7 @@ class Client
         bool checkForRegistered(void);
         void splitbuffer(void);
 
-
+        // std::string getRemoteAddr() const;
 
         // std::string     trim(const std::string& str);
         // std::vector<std::string> Client::split(std::string s, std::string delimiter);
