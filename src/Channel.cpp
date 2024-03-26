@@ -1,5 +1,19 @@
 #include "Channel.hpp"
 
+void Channel::print() const {
+    std::map<int, Client *>::const_iterator it = _clients.cbegin();
+    std::cout << "-----------------------------------------------------\n";
+    std::cout << _name << std::endl; 
+
+    while (it != _clients.end())
+    {
+        std::cout << it->second->getNICK() << std::endl;
+        it++;
+    }
+
+    std::cout << "\n-----------------------------------------------------\n";
+};
+
 Channel::Channel(const std::string& name, const std::string& pass, Client *client) : _name(name), _pass(pass)
 {
     if (client)

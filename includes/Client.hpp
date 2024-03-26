@@ -13,7 +13,6 @@
 class IRC_Server;
 class Channel;
 
-
 enum TypeClient
 {
     Owner,
@@ -62,7 +61,7 @@ class Client
 
         Channel * getChannel(const std::string& name); // TODO sa ardyoq sebc piti lini?
 
-        void jionToChannel(Channel *channel);
+        void joinToChannel(Channel *channel);
         
         int getFd(void);
         

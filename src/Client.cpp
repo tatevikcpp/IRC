@@ -355,8 +355,9 @@ Channel * Client::getChannel(const std::string& name)
 }
 
 
-void Client::jionToChannel(Channel *channel) //TODO  hery chanicel :D
+void Client::joinToChannel(Channel *channel) //TODO  hery chanicel :D
 {
+    std::cout << "joinToChannel\n";
 
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel->getName());
     if (it != this->_channels.end())
@@ -373,7 +374,3 @@ void Client::jionToChannel(Channel *channel) //TODO  hery chanicel :D
     // reply(RPL_ENDOFNAMES(_nickname, channel->getName()));
     // channel->broadcast(RPL_JOIN(get_prefix(), channel->getName()));
 }
-
-
-
-

@@ -233,7 +233,6 @@ int IRC_Server::start(void)
     this->_fdmax = this->_listener + 1; // so far, it's this one
 
     // main loop
-    this->addChannel(new Channel("name"));
     for(;;) 
     {
         read_fds = master; // copy it
@@ -351,7 +350,11 @@ int IRC_Server::start(void)
                             // }
 
                         }
-
+                        std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
+                        while (itChannel != _channels.end()) {
+                            itChannel->second->print();
+                            itChannel++;
+                        }
 
 
                 // if (it->second->_tmpBuffer.find('\n') != std::string::npos)
