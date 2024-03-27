@@ -13,7 +13,7 @@ class Channel
 
         // void addClient(Client &client);
         void deleteClient(Client &client);
-        void joinClient(Client *client);
+        void joinClient(Client &client);
         bool isInChannel(Client* client);
         void sending(Client* C, const std::string& msg/* , const std::string& cmd */);
         void addOperator(Client *clinet);

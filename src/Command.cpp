@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Command::Command(IRC_Server* srv, bool auth) :_srv(srv), _auth(auth) {}
+Command::Command(IRC_Server& srv, bool auth) :_srv(srv), _auth(auth) {}
 
 Command::~Command() {}
 

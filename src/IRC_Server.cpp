@@ -26,17 +26,17 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _s_addr.sin_port = htons(_port);
     _s_addr.sin_addr.s_addr = INADDR_ANY;
 
-    _commands["PASS"] = new Pass(this, false);
-    _commands["NICK"] = new Nick(this, false);
-    _commands["USER"] = new User(this, false);
-    // _commands["QUIT"] = new Quit(*this, false);
+    _commands["PASS"] = new Pass(*this, false);
+    _commands["NICK"] = new Nick(*this, false);
+    _commands["USER"] = new User(*this, false);
+    // _commands["QUIT"] = new Quit(**this, false);
 
-    _commands["PING"] = new Ping(this);
-    _commands["PONG"] = new Pong(this);
-    _commands["JOIN"] = new Join(this);
-    _commands["PART"] = new Part(this);
-    // _commands["KICK"] = new Kick(this);
-    // _commands["MODE"] = new Mode(this);
+    _commands["PING"] = new Ping(*this);
+    _commands["PONG"] = new Pong(*this);
+    _commands["JOIN"] = new Join(*this);
+    _commands["PART"] = new Part(*this);
+    // _commands["KICK"] = new Kick(*this);
+    // _commands["MODE"] = new Mode(*this);
 
 	// _commands["PRIVMSG"] = new PrivMsg(*this);
 	// _commands["NOTICE"] = new Notice(*this);
@@ -106,25 +106,25 @@ bool IRC_Server::checkNickname(const std::string& nick) //TODO  std::string offf
     return true;
 }
 
-void IRC_Server::changeNickname(Client *client, const std::string& newNick) //TODO strategia chka :D  
+void IRC_Server::changeNickname(Client &client, const std::string& newNick) //TODO strategia chka :D  
 {
-    if (this->_clients.find(client->_fd) != this->_clients.end())
+    if (this->_clients.find(client._fd) != this->_clients.end())
     {
-        this->_clients[client->_fd]->setNICK(newNick);
+        this->_clients[client._fd]->setNICK(newNick);
     }
     //esle, esim ?
 }
 
-void IRC_Server::addChannel(Channel *channel)
+void IRC_Server::addChannel(Channel &channel)
 {
 
-    if (this->_channels.insert(std::make_pair(channel->_name, channel)).second == false)
+    if (this->_channels.insert(std::make_pair(channel._name, &channel)).second == false)
     {
         std::cout << "alredy exist\n";
     }
 }
 
-void IRC_Server::addClientToChannel(const std::string& name, Client *client)
+void IRC_Server::addClientToChannel(const std::string& name, Client &client)
 {
     std::map<std::string, Channel *>::iterator  it = this->_channels.find(name);
     if (it != this->_channels.end())
@@ -133,10 +133,9 @@ void IRC_Server::addClientToChannel(const std::string& name, Client *client)
     }
 }
 
-
-Channel* IRC_Server::createChannel(const std::string& name, const std::string& pass, Client *client)
+Channel* IRC_Server::createChannel(const std::string& name, const std::string& pass, Client &client)
 {
-    Channel *new_channel = new Channel(name, pass, client);
+    Channel *new_channel = new Channel(name, pass, &client);
     this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
     return (new_channel);
 }
@@ -339,7 +338,7 @@ int IRC_Server::start(void)
                                 it->second->reply(ERR_UNKNOWNCOMMAND(it->second->getNICK(), it->second->getCommand()));
                                 continue;
                             }
-                            this->_commands[it->second->getCommand()]->execute(it->second, it->second->getArguments());
+                            this->_commands[it->second->getCommand()]->execute(*it->second, it->second->getArguments());
                             // while (!it->second->getArguments().empty() || !it->second->getCommand().empty())
                             // {
                             //     // std::cout << "face :D" << std::endl;

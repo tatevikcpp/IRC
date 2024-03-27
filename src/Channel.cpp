@@ -17,7 +17,7 @@ void Channel::print() const {
 Channel::Channel(const std::string& name, const std::string& pass, Client *client) : _name(name), _pass(pass)
 {
     if (client)
-        this->joinClient(client);
+        this->joinClient(*client);
     this->_limit = 0;
 //     this->_name = name;
 //     this->_pass = pass;
@@ -28,9 +28,10 @@ Channel::~Channel()
 
 }
 
-void Channel::joinClient(Client *client)
+void Channel::joinClient(Client &client)
 {
-    this->_clients[client->_fd] = client;
+    this->_clients[client._fd] = &client;
+    client.joinToChannel(*this);
 }
 
 void Channel::deleteClient(Client &client)

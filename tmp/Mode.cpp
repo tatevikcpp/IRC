@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Mode::Mode(IRC_Server* srv) : Command(srv) {}
+Mode::Mode(IRC_Server& srv) : Command(srv) {}
 
 Mode::~Mode() {}
 
@@ -13,22 +13,22 @@ void    Mode::execute(Client* client, std::vector<std::string> args)
 
     if (args.size() < 2)
     {
-        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "MODE"));
+        client.reply(ERR_NEEDMOREPARAMS(client.get_nickname(), "MODE"));
         return;
     }
     
     std::string target = args.at(0);
     
-    Channel *channel = _srv->get_channel(target); //MODE on clients not implemented
+    Channel *channel = _srv.get_channel(target); //MODE on clients not implemented
     if (!channel)
     {
-        client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
+        client.reply(ERR_NOSUCHCHANNEL(client.get_nickname(), target));
         return;
     }
 
     if (channel->get_admin() != client)
     {
-        client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), target));
+        client.reply(ERR_CHANOPRIVSNEEDED(client.get_nickname(), target));
         return;
     }
 
@@ -47,20 +47,20 @@ void    Mode::execute(Client* client, std::vector<std::string> args)
             case 'n':
             {
                 channel->set_ext_msg(active);
-                channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+n" : "-n"), ""));
+                channel->broadcast(RPL_MODE(client.get_prefix(), channel->get_name(), (active ? "+n" : "-n"), ""));
                 break;
             }
 			case 'l':
             {
                 channel->set_limit(active ? atoi(args[p].c_str()) : 0);
-                channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+l" : "-l"), (active ? args[p] : "")));
+                channel->broadcast(RPL_MODE(client.get_prefix(), channel->get_name(), (active ? "+l" : "-l"), (active ? args[p] : "")));
                 p += active ? 1 : 0;
                 break;
             }
 			case 'k':
             {
                 channel->set_key(active ? args[p] : "");
-                channel->broadcast(RPL_MODE(client->get_prefix(), channel->get_name(), (active ? "+k" : "-k"), (active ? args[p] : "")));
+                channel->broadcast(RPL_MODE(client.get_prefix(), channel->get_name(), (active ? "+k" : "-k"), (active ? args[p] : "")));
                 p += active ? 1 : 0;
                 break;
             }

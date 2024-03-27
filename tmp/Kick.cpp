@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Kick::Kick(IRC_Server* srv) : Command(srv) {}
+Kick::Kick(IRC_Server& srv) : Command(srv) {}
 
 Kick::~Kick() {}
 
@@ -10,7 +10,7 @@ void    Kick::execute(Client* client, std::vector<std::string> args)
 {
     if (args.size() < 2)
     {
-        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "KICK"));
+        client.reply(ERR_NEEDMOREPARAMS(client.get_nickname(), "KICK"));
         return;
     }
 
@@ -34,29 +34,29 @@ void    Kick::execute(Client* client, std::vector<std::string> args)
         }
     }
 
-    Channel *channel = client->get_channel();
+    Channel *channel = client.get_channel();
     if (!channel || channel->get_name() != name)
     {
-        client->reply(ERR_NOTONCHANNEL(client->get_nickname(), name));
+        client.reply(ERR_NOTONCHANNEL(client.get_nickname(), name));
         return;
     }
 
     if (channel->get_admin() != client)
     {
-        client->reply(ERR_CHANOPRIVSNEEDED(client->get_nickname(), name));
+        client.reply(ERR_CHANOPRIVSNEEDED(client.get_nickname(), name));
         return;
     }
 
-    Client *dest = _srv->get_client(target);
+    Client *dest = _srv.get_client(target);
     if (!dest)
     {
-        client->reply(ERR_NOSUCHNICK(client->get_nickname(), target));
+        client.reply(ERR_NOSUCHNICK(client.get_nickname(), target));
         return;
     }
 
     if (!dest->get_channel() || dest->get_channel() != channel)
     {
-        client->reply(ERR_USERNOTINCHANNEL(client->get_nickname(), dest->get_nickname(), name));
+        client.reply(ERR_USERNOTINCHANNEL(client.get_nickname(), dest->get_nickname(), name));
         return;
     }
 

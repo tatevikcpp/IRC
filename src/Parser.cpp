@@ -1,6 +1,6 @@
 // #include "Parser.hpp"
 
-// Parser::Parser(IRC_Server* srv) : _srv(srv)
+// Parser::Parser(IRC_Server& srv) : _srv(srv)
 // {
 //     _commands["PASS"] = new Pass(_srv, false);
 //     _commands["NICK"] = new Nick(_srv, false);
@@ -70,9 +70,9 @@
 //                 args.push_back(buf);
 
 
-//             if (!client->is_registered() && cmd->auth_required())
+//             if (!client.is_registered() && cmd->auth_required())
 //             {
-//                 client->reply(ERR_NOTREGISTERED(client->get_nickname()));
+//                 client.reply(ERR_NOTREGISTERED(client.get_nickname()));
 //                 return;
 //             }
 
@@ -80,7 +80,7 @@
 //         }
 //         catch (const std::exception& e)
 //         {
-//             client->reply(ERR_UNKNOWNCOMMAND(client->get_nickname(), name));
+//             client.reply(ERR_UNKNOWNCOMMAND(client.get_nickname(), name));
 //         }
 //     }
 // }

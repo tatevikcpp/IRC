@@ -61,7 +61,7 @@ class Client
 
         Channel * getChannel(const std::string& name); // TODO sa ardyoq sebc piti lini?
 
-        void joinToChannel(Channel *channel);
+        void joinToChannel(Channel &channel);
         
         int getFd(void);
         

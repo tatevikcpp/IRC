@@ -34,9 +34,9 @@ class IRC_Server
         // IRC_Server(const std::string& v1, const std::string& v2);
         IRC_Server(const char *port, const char *password);
         ~IRC_Server();
-        void addChannel(Channel *);
-        Channel* createChannel(const std::string& name, const std::string& pass, Client *client);
-        void addClientToChannel(const std::string& name, Client *);
+        void addChannel(Channel &);
+        Channel* createChannel(const std::string& name, const std::string& pass, Client &client);
+        void addClientToChannel(const std::string& name, Client &);
         int start(void);
         // void initStruct(void);+
 
@@ -45,7 +45,7 @@ class IRC_Server
         std::string getPASS(void);
         // Client *getClient(const std::string& nick);
         bool checkNickname(const std::string& nick);
-        void changeNickname(Client *, const std::string& newNick);
+        void changeNickname(Client &, const std::string& newNick);
 
         Client * getClient(const std::string& nick);
         Channel * getChannel(const std::string& name);

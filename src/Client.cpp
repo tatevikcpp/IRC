@@ -355,17 +355,16 @@ Channel * Client::getChannel(const std::string& name)
 }
 
 
-void Client::joinToChannel(Channel *channel) //TODO  hery chanicel :D
+void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
 {
     std::cout << "joinToChannel\n";
 
-    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel->getName());
-    if (it != this->_channels.end())
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel.getName());
+    if (it == this->_channels.end())
     {
         // if (channel->_clients.empty())
-        channel->joinClient(this);
-        // this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel->getName(), (channel, ))) //TODO
-        
+        // channel.joinClient(*this);
+        this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), &channel, ))) //TODO
     }
 
     // Send replies

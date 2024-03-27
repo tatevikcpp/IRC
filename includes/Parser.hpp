@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shovsepy <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tkhechoy <tkhechoy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/30 13:52:51 by shovsepy          #+#    #+#             */
-/*   Updated: 2022/12/30 13:58:53 by shovsepy         ###   ########.fr       */
+/*   Updated: 2024/03/27 14:40:18 by tkhechoy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Parser
 {
     public:
 
-        Parser(IRC_Server* srv);
+        Parser(IRC_Server& srv);
         ~Parser();
 
         void invoke(Client* client, const std::string& message);

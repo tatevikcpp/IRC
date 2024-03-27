@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Notice::Notice(IRC_Server* srv) : Command(srv) {}
+Notice::Notice(IRC_Server& srv) : Command(srv) {}
 
 Notice::~Notice() {}
 
@@ -10,7 +10,7 @@ void    Notice::execute(Client* client, std::vector<std::string> args)
 {
     if (args.size() < 2 || args[0].empty() || args[1].empty())
     {
-        client->reply(ERR_NEEDMOREPARAMS(client->get_nickname(), "NOTICE"));
+        client.reply(ERR_NEEDMOREPARAMS(client.get_nickname(), "NOTICE"));
         return;
     }
 
@@ -35,12 +35,12 @@ void    Notice::execute(Client* client, std::vector<std::string> args)
 
     if (target.at(0) == '#')
     {
-        Channel* channel = client->get_channel();
+        Channel* channel = client.get_channel();
 
         // channel not found
         if (!channel)
         {
-            client->reply(ERR_NOSUCHCHANNEL(client->get_nickname(), target));
+            client.reply(ERR_NOSUCHCHANNEL(client.get_nickname(), target));
 			return;
         }
 
@@ -55,7 +55,7 @@ void    Notice::execute(Client* client, std::vector<std::string> args)
             // check if client is in the channel
             while (it != end)
             {
-                if (*it == client->get_nickname())
+                if (*it == client.get_nickname())
                     break;
 
                 it++;
@@ -64,23 +64,23 @@ void    Notice::execute(Client* client, std::vector<std::string> args)
             // if not in channel
             if (it == end)
             {
-                client->reply(ERR_CANNOTSENDTOCHAN(client->get_nickname(), target));
+                client.reply(ERR_CANNOTSENDTOCHAN(client.get_nickname(), target));
                 return;
             }
         }
 
-        channel->broadcast(RPL_NOTICE(client->get_prefix(), target, message), client);
+        channel->broadcast(RPL_NOTICE(client.get_prefix(), target, message), client);
         return;
     }
 
     // else if notice is for a client
 
-    Client  *dest = _srv->get_client(target);
+    Client  *dest = _srv.get_client(target);
     if (!dest)
     {
-        client->reply(ERR_NOSUCHNICK(client->get_nickname(), target));
+        client.reply(ERR_NOSUCHNICK(client.get_nickname(), target));
 		return;
     }
 
-    dest->write(RPL_NOTICE(client->get_prefix(), target, message));
+    dest->write(RPL_NOTICE(client.get_prefix(), target, message));
 }
