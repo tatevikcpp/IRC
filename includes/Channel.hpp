@@ -19,6 +19,7 @@ class Channel
         void addOperator(Client *clinet);
         bool channelIsFull(void);
         bool emptyChannel(void);
+        bool isInviteOnly(void);
 
         size_t get_limit() const;
         size_t get_size()const;
@@ -35,6 +36,7 @@ class Channel
         std::map<int, Client *> _clients;
         std::set<std::string> _admins;
         size_t _limit;
+        bool _inviteOnly;
     public:
         std::string _name;
         std::string _pass;

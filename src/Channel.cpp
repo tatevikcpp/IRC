@@ -75,6 +75,10 @@ std::string Channel::get_pass() const
     return (this->_pass);
 }
 
+bool Channel::isInviteOnly(void)
+{
+    return _inviteOnly;
+}
 
 std::string Channel::getName(void)
 {

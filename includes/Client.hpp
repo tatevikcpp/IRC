@@ -15,9 +15,9 @@ class Channel;
 
 enum TypeClient
 {
-    Owner,
+    Admin,
     Operator,
-    Primary
+    // Primary
 };
 
 class Client

@@ -1,6 +1,8 @@
 #include "Client.hpp"
 #include <netinet/in.h>
 #include <sstream>
+#include <utility>
+#include "Numeric_and_error_replies.hpp"
 
 // void *get_in_addr(struct sockaddr *sa)
 // {
@@ -354,17 +356,24 @@ Channel * Client::getChannel(const std::string& name)
     return (it->second.first);
 }
 
-
-void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
+bool Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
 {
+
     std::cout << "joinToChannel\n";
 
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel.getName());
+
     if (it == this->_channels.end())
     {
         // if (channel->_clients.empty())
         // channel.joinClient(*this);
-        this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), &channel, ))) //TODO
+        this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Admin))); //TODO
+    }
+    else
+    {
+        this->reply(ERR_USERONCHANNEL(this->getNICK(), this->getNICK(), channel._name + static_cast<char>(1)));
+        return ;
+
     }
 
     // Send replies

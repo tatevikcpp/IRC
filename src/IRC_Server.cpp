@@ -137,6 +137,7 @@ Channel* IRC_Server::createChannel(const std::string& name, const std::string& p
 {
     Channel *new_channel = new Channel(name, pass, &client);
     this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
+    // client._channels.insert(std::pair<std::string,std::pair<Channel*, TypeClient> >((new_channel->getName(), (new_channel, Admin))); TODO
     return (new_channel);
 }
 
