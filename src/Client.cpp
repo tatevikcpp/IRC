@@ -89,7 +89,7 @@ Channel* Client::createChannel(const std::string& name, const std::string& pass)
         return (NULL);
     }
     Channel *tmp = new Channel(name, pass, this);
-    this->_channels[name] = std::make_pair(tmp, Owner);
+    this->_channels[name] = std::make_pair(tmp, Admin);
     return (tmp);
 }
 
@@ -102,12 +102,6 @@ void Client::leaveChannel(const std::string& name)
         this->_channels.erase(it);  //TODO - ha vor ?
     }
 }
-
-// void Client::joinToChannel(Client *client)
-// {
-//     channel->joinClient()
-// }
-
 
 
 
@@ -139,6 +133,13 @@ std::vector<std::string> split(std::string const &input) // TODO hamozvel vor is
     return ret;
 }
 
+
+bool Channel::isInChannel(Client& client)
+{
+    if (this->_clients.find(client.getFd()) == this->_clients.end())
+        return false;
+    return true;
+}
 
 // std::vector<std::string> split(std::string s, std::string delimiter)
 // {
@@ -356,7 +357,7 @@ Channel * Client::getChannel(const std::string& name)
     return (it->second.first);
 }
 
-bool Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
+void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
 {
 
     std::cout << "joinToChannel\n";
@@ -369,12 +370,12 @@ bool Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
         // channel.joinClient(*this);
         this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Admin))); //TODO
     }
-    else
-    {
-        this->reply(ERR_USERONCHANNEL(this->getNICK(), this->getNICK(), channel._name + static_cast<char>(1)));
-        return ;
+    // else
+    // {
+    //     this->reply(ERR_USERONCHANNEL(this->getNICK(), this->getNICK(), channel._name + static_cast<char>(1)));
+    //     return ;
 
-    }
+    // }
 
     // Send replies
     

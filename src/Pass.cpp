@@ -26,5 +26,5 @@ void    Pass::execute(Client& client, std::vector<std::string> args)
         return;
     }
 
-    // client.setPASS(); // TODO sharunakelu :D 
+    client.setPASS(args[0]);
 }

@@ -8,6 +8,13 @@ User::~User() {}
 
 void    User::execute(Client& client, std::vector<std::string> args)
 {
+    if (client.getPASS().empty())
+    {
+        std::cout << "client.getPASS() "  << client.getPASS() << std::endl;
+        std::cout << "user in execute" << std::endl;
+        client.reply(ERR_NOTREGISTERED(client.getNICK()));
+        return ;
+    }
     if (client.isRegistered())
     {
         client.reply(ERR_ALREADYREGISTERED(client.getNICK()));

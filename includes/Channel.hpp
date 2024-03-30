@@ -14,9 +14,9 @@ class Channel
         // void addClient(Client &client);
         void deleteClient(Client &client);
         void joinClient(Client &client);
-        bool isInChannel(Client* client);
+        bool isInChannel(Client& client);
         void sending(Client* C, const std::string& msg/* , const std::string& cmd */);
-        void addOperator(Client *clinet);
+        // void addOperator(Client *clinet);
         bool channelIsFull(void);
         bool emptyChannel(void);
         bool isInviteOnly(void);
@@ -31,6 +31,12 @@ class Channel
         void broadcast(const std::string& message, Client* exclude);
 
         void print() const;
+
+        void setChannelLimit(int limit);
+        int getChannelLimit(void);
+
+        // std::vector<std::string> get_nicknames(void);
+        // void Channel::nameReply(Client &client);
 
     private:
         std::map<int, Client *> _clients;
