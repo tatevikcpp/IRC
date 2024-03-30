@@ -41,10 +41,24 @@ bool Client::isRegistered(void)
 //     }
 // }
 
+
+bool Client::isAdmin(const Channel &channel) const 
+{
+    std::map<std::string, std::pair<Channel*, TypeClient> >::const_iterator it = this->_channels.find(channel.getName());
+    if (it != this->_channels.cend())
+    {
+        // if (it->second.find(channel) != it->second.end)
+        // return it->second.find(channel)
+        return it->second.second == Admin;
+    }
+    return false;
+}
+
 bool Client::checkForRegistered(void)
 {
     if (!_pass.empty() && !_username.empty() && !_nick.empty() && !_registered)
     {
+        std::cout << "lalalalili" << std::endl;
         this->_registered = true;
         reply(RPL_WELCOME(_nick));
     }
@@ -322,6 +336,16 @@ void Client::reply(const std::string& reply) // TODO kisat!
         std::cerr << "Error: can't send message to client." << std::endl;
 }
 
+
+void Client::sendMsg(const std::string& msg) // TODO kisat!
+{
+    // (void)reply;
+    std::string buff = msg;
+
+    if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
+        std::cerr << "Error: can't send message to client." << std::endl;
+}
+
 std::string Client::getNICK(void) const
 {
     return (this->_nick);
@@ -343,9 +367,6 @@ std::string Client::getPrefix(void)
 
     return (prefix); 
 }
-
-
-
 
 Channel * Client::getChannel(const std::string& name)
 {

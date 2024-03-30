@@ -49,28 +49,28 @@ Channel::~Channel()
 //     return nicknames;
 // }
 
-// void Channel::nameReply(Client &client) TODO "@" -i hamar 
-// {
-//     // sending TOPIC to new user    
-//     // std::string topic = this->getTopic();
-//     // if (topic.empty())            
-//     //     client.sending(RPL_NOTOPIC(_channelName + static_cast<char>(1)));
-//     // else            
-//     //     client.sending(RPL_TOPIC(_channelName + static_cast<char>(1), topic));
-    
-//     // sending channal's users list to new user
-//     std::string nickList;
-//     std::map<int, Client *>::iterator it = this->_clients.begin();
-//     for (; it != _clients.end(); ++it)
-//     {
-//         // std::string prefix = (_clients[i] == _admin) ? "@" : "+";
-//         // nickList += prefix + _clients[i]->getNICK() + "  ";
+void Channel::nameReply(Client &client) //TODO "@" -i hamar
+{
+    // sending TOPIC to new user    
+    // std::string topic = this->getTopic();
+    // if (topic.empty())            
+    //     client.sending(RPL_NOTOPIC(_channelName + static_cast<char>(1)));
+    // else            
+    //     client.sending(RPL_TOPIC(_channelName + static_cast<char>(1), topic));
+    // sending channal's users list to new user
+    std::string nickList;
+    std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
+    if (it != _clients.end())
+    {
+        // std::string prefix = (_clients[i] == _admin) ? "@" : "+";
+        // nickList += prefix + _clients[i]->getNICK() + "  ";
 
-//         std::string prefix = (it->second->_channels 
-//     }
-//     // client.sending(RPL_NAMREPLY(client.getNICK(), _channelName + static_cast<char>(1), nickList));
-//     // client.sending(RPL_ENDOFNAMES(client.getNICK(), _channelName + static_cast<char>(1)));
-// }
+        std::string prefix = client.isAdmin(*this) == true ? "@" : "+";
+        nickList += prefix + client.getNICK() + "  ";
+    }
+    client.sendMsg(RPL_NAMREPLY(client.getNICK(), _name + static_cast<char>(1), nickList));
+    client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
+}
 
 
 void Channel::joinClient(Client &client)
@@ -142,7 +142,7 @@ bool Channel::isInviteOnly(void)
     return _inviteOnly;
 }
 
-std::string Channel::getName(void)
+std::string Channel::getName(void) const
 {
     return (this->_name);
 }

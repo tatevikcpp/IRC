@@ -83,15 +83,16 @@ void    Join::execute(Client& client, std::vector<std::string> args)
         if (!channel)
         {
             channel = _srv.createChannel(name, pass, client);
+            channel->nameReply(client);
+            return ;
         }
-
-        if (channel->isInChannel(client))
+        else  if (channel->isInChannel(client))
         {
             client.reply(ERR_USERONCHANNEL(client.getNICK(), client.getNICK(), name + static_cast<char>(1)));
             return ;
         }
 
-        if (channel->isInviteOnly())
+        if (channel->isInviteOnly()) // TODO 
         {
             client.reply(ERR_INVITEONLYCHAN(client.getNICK(), name + static_cast<char>(1)));
             return ;
@@ -109,6 +110,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
             return ;
         }
         client.joinToChannel(*channel);
+        channel->nameReply(client);
 
     }
 }

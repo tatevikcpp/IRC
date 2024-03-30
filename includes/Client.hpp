@@ -55,6 +55,7 @@ class Client
 
         std::string getPrefix(void);
         void reply(const std::string& reply);
+        void sendMsg(const std::string& msg);
         
         std::string getCommand(void);
         // std::string get_nickname() const;
@@ -64,6 +65,8 @@ class Client
         void joinToChannel(Channel &channel);
         
         int getFd(void);
+
+        bool isAdmin(const Channel &channel) const;
         
         std::string _buffer;
 
