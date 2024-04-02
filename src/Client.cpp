@@ -15,7 +15,14 @@ Client::Client(int fd, const struct sockaddr& addr) : _fd(fd)
 {
     this->_clientAddr = addr;
     this->_registered = false;
+
+    char hostname[NI_MAXHOST];
+    getnameinfo((struct sockaddr*)&addr, sizeof(addr), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV);
+    _hostname = hostname; // TODO sxal _hostname !!!
+    std::cout << "_hostname is : << " << _hostname << " >>" << std::endl; 
 }
+
+
 
 // std::string Client::getRemoteAddr() const
 // {
@@ -58,7 +65,6 @@ bool Client::checkForRegistered(void)
 {
     if (!_pass.empty() && !_username.empty() && !_nick.empty() && !_registered)
     {
-        std::cout << "lalalalili" << std::endl;
         this->_registered = true;
         reply(RPL_WELCOME(_nick));
     }
@@ -339,8 +345,7 @@ void Client::reply(const std::string& reply) // TODO kisat!
 
 void Client::sendMsg(const std::string& msg) // TODO kisat!
 {
-    // (void)reply;
-    std::string buff = msg;
+    std::string buff = msg + "\r\n";
 
     if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
         std::cerr << "Error: can't send message to client." << std::endl;
@@ -390,6 +395,7 @@ void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
         // if (channel->_clients.empty())
         // channel.joinClient(*this);
         this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Admin))); //TODO
+        
     }
     // else
     // {

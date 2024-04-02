@@ -4,7 +4,7 @@ void Channel::print() const {
     std::map<int, Client *>::const_iterator it = _clients.cbegin();
     std::cout << "-----------------------------------------------------\n";
     std::cout << _name << std::endl; 
-
+    std::cout << "size = " << this->_clients.size() << std::endl;
     while (it != _clients.end())
     {
         std::cout << it->second->getNICK() << std::endl;
@@ -51,6 +51,7 @@ Channel::~Channel()
 
 void Channel::nameReply(Client &client) //TODO "@" -i hamar
 {
+    std::cout << "Channel::nameReply" << std::endl;
     // sending TOPIC to new user    
     // std::string topic = this->getTopic();
     // if (topic.empty())            
@@ -66,6 +67,7 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
         // nickList += prefix + _clients[i]->getNICK() + "  ";
 
         std::string prefix = client.isAdmin(*this) == true ? "@" : "+";
+        std::cout << "prefix " << prefix << std::endl;
         nickList += prefix + client.getNICK() + "  ";
     }
     client.sendMsg(RPL_NAMREPLY(client.getNICK(), _name + static_cast<char>(1), nickList));
