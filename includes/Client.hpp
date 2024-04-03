@@ -30,7 +30,7 @@ class Client
 
 
         const int _fd;
-        void leaveChannel(const std::string& name);
+        void leaveChannel(const std::string &name);
         Channel* createChannel(const std::string& name, const std::string& pass = "");
         bool isRegistered(void);
     
@@ -52,6 +52,7 @@ class Client
 
         void setArguments(void);
         std::vector<std::string> getArguments(void);
+        std::string getName(void) const;
 
         std::string getPrefix(void);
         void reply(const std::string& reply);

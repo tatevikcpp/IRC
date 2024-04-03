@@ -172,3 +172,33 @@ void Channel::broadcast(const std::string& message, Client* exclude)
         it->second->reply(message);
     }
 }
+
+
+
+bool Channel::emptyClients(void)
+{
+    return _clients.empty();
+}
+
+// void Channel::removeClient(Client &client) // TODO offff
+// {
+//     std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
+//     if (it == this->_clients.end())
+//         return ;
+//     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it_c = client._channels.find(this->getName());
+//     if (it_c != client._channels.end())
+//     {
+//         if (this->_clients.size() == 1)
+//         {
+//             this->_clients.erase(client.getFd());
+//             //TODO jnjel map -y???
+//         }
+//         if (it_c->second.second == Admin)
+//         {
+//             this->_clients.erase(client.getFd());
+//             this->_clients.begin()->second._channels->second.second = Admin;
+//         }
+//     }
+
+//     // this->_clients.erase(client.getFd());
+// }

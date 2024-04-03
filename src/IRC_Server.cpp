@@ -152,6 +152,20 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+void IRC_Server::checkForCloseCannel(void)
+{
+    std::map<std::string, Channel *>::iterator it = _channels.begin();
+    for ( ; it != _channels.end(); ++it)
+    {
+        if ((it->second)->emptyClients())
+        {
+            _channels.erase(it->first);
+            delete it->second;
+        }
+    }
+}
+
+
 int IRC_Server::start(void)
 {
     fd_set master;    // master file descriptor list

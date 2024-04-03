@@ -49,6 +49,8 @@ class IRC_Server
 
         Client * getClient(const std::string& nick);
         Channel * getChannel(const std::string& name);
+
+        void checkForCloseCannel(void);
     private:
         unsigned short _port;
         std::string _password;

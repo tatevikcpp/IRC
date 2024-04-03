@@ -25,6 +25,7 @@ class Channel
         size_t get_size()const;
         std::string get_pass() const;
 
+        // std::string getName(void) const;
         std::string getName(void) const;
 
         void broadcast(const std::string& message);
@@ -37,6 +38,9 @@ class Channel
 
         // std::vector<std::string> get_nicknames(void);
         void nameReply(Client &client);
+        // void re moveClient(Client &client);
+
+        bool emptyClients(void);
 
     private:
         std::map<int, Client *> _clients;

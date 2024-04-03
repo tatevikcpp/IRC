@@ -91,7 +91,7 @@ std::string Client::getPASS(void)
 
 void Client::setNICK(const std::string& nick) // TODO sending??
 {
-    this->_nick = nick;  
+    this->_nick = nick;
 }
 
 void Client::setUSER(const std::string& username, const std::string& realname)
@@ -113,16 +113,39 @@ Channel* Client::createChannel(const std::string& name, const std::string& pass)
     return (tmp);
 }
 
-void Client::leaveChannel(const std::string& name)
+void Client::leaveChannel(const std::string &name)
 {
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
     if (it != this->_channels.end())
     {
+
         it->second.first->deleteClient(*this);
         this->_channels.erase(it);  //TODO - ha vor ?
     }
 }
 
+// void Channel::removeClient(Client &client) // TODO offff
+// {
+//     std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
+//     if (it == this->_clients.end())
+//         return ;
+//     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it_c = client._channels.find(this->getName());
+//     if (it_c != client._channels.end())
+//     {
+//         if (this->_clients.size() == 1)
+//         {
+//             this->_clients.erase(client.getFd());
+//             //TODO jnjel map -y???
+//         }
+//         if (it_c->second.second == Admin)
+//         {
+//             this->_clients.erase(client.getFd());
+//             this->_clients.begin()->second._channels->second.second = Admin;
+//         }
+//     }
+
+//     // this->_clients.erase(client.getFd());
+// }
 
 
 
@@ -142,6 +165,11 @@ std::string     trim(const std::string& str)
     return result;
 }
 
+// std::string Client::getName(void) const 
+// {
+//     return (this->_name);
+// }
+
 std::vector<std::string> split(std::string const &input) // TODO hamozvel vor isspace ova ashxatum
 {
     std::istringstream buffer(input);
@@ -154,12 +182,12 @@ std::vector<std::string> split(std::string const &input) // TODO hamozvel vor is
 }
 
 
-bool Channel::isInChannel(Client& client)
-{
-    if (this->_clients.find(client.getFd()) == this->_clients.end())
-        return false;
-    return true;
-}
+// bool Channel::isInChannel(Client& client)
+// {
+//     if (this->_clients.find(client.getFd()) == this->_clients.end())
+//         return false;
+//     return true;
+// }
 
 // std::vector<std::string> split(std::string s, std::string delimiter)
 // {
@@ -395,7 +423,6 @@ void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
         // if (channel->_clients.empty())
         // channel.joinClient(*this);
         this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Admin))); //TODO
-        
     }
     // else
     // {
