@@ -3,7 +3,8 @@
 #include "Client.hpp"
 #include <map>
 #include <set>
-
+// #include <queue>
+// deleteClient, joinClient, Channel, ~Channel
 class Client;
 class Channel
 {
@@ -38,13 +39,14 @@ class Channel
 
         // std::vector<std::string> get_nicknames(void);
         void nameReply(Client &client);
-        // void re moveClient(Client &client);
+        // void removeClient(Client &client);
 
         bool emptyClients(void);
 
     private:
         std::map<int, Client *> _clients;
-        std::set<std::string> _admins;
+        std::set<Client *> _admins;
+        std::list<Client *> _listClient;
         size_t _limit;
         bool _inviteOnly;
     public:

@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include <algorithm>
 
 void Channel::print() const {
     std::map<int, Client *>::const_iterator it = _clients.cbegin();
@@ -77,13 +78,29 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
 
 void Channel::joinClient(Client &client)
 {
+    if (this->_clients.find(client._fd) != this->_clients.end())
+    {
+        return ;
+    }
+    if (this->_clients.empty())
+    {
+        this->_admins.insert(client);
+
+    }
     this->_clients[client._fd] = &client;
+    this->_listClient.push_back(&client);
     client.joinToChannel(*this);
 }
 
 void Channel::deleteClient(Client &client)
 {
     this->_clients.erase(client._fd);
+    std::list<Client *>::iterator it = std::find(this->_listClient.begin(), this->_listClient.end(), &client);
+    if (it !=  this->_listClient.end())
+    {
+        this->_listClient.erase(it);
+    }
+
 }
 
 void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */) //TODO
@@ -202,3 +219,11 @@ bool Channel::emptyClients(void)
 
 //     // this->_clients.erase(client.getFd());
 // }
+
+
+bool Channel::isInChannel(Client& client)
+{
+    if (this->_clients.find(client.getFd()) == this->_clients.end())
+        return false;
+    return true;
+}

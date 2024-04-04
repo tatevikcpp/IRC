@@ -49,7 +49,6 @@ void    Join::execute(Client& client, std::vector<std::string> args)
 {
     if (!client.isRegistered())
     {
-        // std::cout << "join" << std::endl;
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
         return ;
     }
@@ -62,7 +61,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
 
     if (args[0] == "0") //TODO  harmaracnel!
     {
-        client.leaveChannel(client.getName());
+        client.leaveChannel();
         _srv.checkForCloseCannel();
         return ;
     }
@@ -109,8 +108,6 @@ void    Join::execute(Client& client, std::vector<std::string> args)
             client.reply(ERR_BADCHANNELKEY(client.getNICK(), name, "Cannot join channel (+k)"));
             return ;
         }
-
-        // TODO client-i hamar anel
         channel->joinClient(client);
         channel->nameReply(client);
     }

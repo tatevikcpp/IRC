@@ -118,9 +118,33 @@ void Client::leaveChannel(const std::string &name)
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
     if (it != this->_channels.end())
     {
-
+        if (it->second.second == Admin)
+        {
+            it->second.first->
+        }
         it->second.first->deleteClient(*this);
         this->_channels.erase(it);  //TODO - ha vor ?
+    }
+}
+
+
+void Client::leavALLChannels(/* const std::string &name */) //TODO kisat
+{
+    std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.begin();
+    // std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it_e = this->_channels.end();
+    for (; it != this->_channels.end(); ++it)
+    {
+        if (it->second.second == Admin)
+        {
+            if (it->second.first_clients.size() == 1)
+            {
+                // it->second.first->deleteClient(*this);
+                //delet channel;
+            }
+            // it->second.first._clients.begin()++;
+            // it->second.first._clients.begin()->_channels ===== Adimin;
+        }
+        it->second.first->deleteClient(*this);
     }
 }
 
@@ -180,14 +204,6 @@ std::vector<std::string> split(std::string const &input) // TODO hamozvel vor is
               std::back_inserter(ret));
     return ret;
 }
-
-
-// bool Channel::isInChannel(Client& client)
-// {
-//     if (this->_clients.find(client.getFd()) == this->_clients.end())
-//         return false;
-//     return true;
-// }
 
 // std::vector<std::string> split(std::string s, std::string delimiter)
 // {
@@ -413,7 +429,7 @@ Channel * Client::getChannel(const std::string& name)
 
 void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
 {
-
+    // channel.joinClient(*this);
     std::cout << "joinToChannel\n";
 
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel.getName());
