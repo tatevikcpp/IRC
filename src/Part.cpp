@@ -6,12 +6,17 @@ Part::~Part() {}
 
 // syntax: PART <channels> [<message>]
 
-void    Part::execute(Client& client, std::vector<std::string> args)
+void    Part::execute(Client& client, std::vector<std::string> args) //TODO 
 {
+    if (!client.isRegistered())
+    {
+        client.reply(ERR_NOTREGISTERED(client.getNICK()));
+        return ;
+    }
     if (args.empty()) 
     {
         client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "PART"));
-        return;
+        return ;
     }
 
     std::string name = args[0];
