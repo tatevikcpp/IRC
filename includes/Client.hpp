@@ -73,7 +73,7 @@ class Client
         
         std::string _buffer;
 
-
+        // void changeRole(const std::string &name, TypeClient);
         void print_vector()
         {
             if (!_arguments.empty())
@@ -91,7 +91,7 @@ class Client
         // std::string _port;
         struct sockaddr _clientAddr;
         // std::map<std::string, Channel*> _channels;
-        std::map<std::string, std::pair<Channel*, TypeClient> > _channels;
+        std::map<std::string, std::pair<Channel*, TypeClient> > _channels;  // TODO TypeClient is not valid
 
 
         std::string _pass;

@@ -84,7 +84,7 @@ void Channel::joinClient(Client &client)
     }
     if (this->_clients.empty())
     {
-        this->_admins.insert(client);
+        this->_admins.insert(&client);
 
     }
     this->_clients[client._fd] = &client;
@@ -99,6 +99,11 @@ void Channel::deleteClient(Client &client)
     if (it !=  this->_listClient.end())
     {
         this->_listClient.erase(it);
+    }
+    if (this->_admins.size() == 1 &&  this->_admins.find(&client) != this->_admins.end())
+    {
+        this->_admins.erase(&client);
+        this->_admins.insert(this->_listClient.front());
     }
 
 }

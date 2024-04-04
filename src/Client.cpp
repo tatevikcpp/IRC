@@ -118,10 +118,6 @@ void Client::leaveChannel(const std::string &name)
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
     if (it != this->_channels.end())
     {
-        if (it->second.second == Admin)
-        {
-            it->second.first->
-        }
         it->second.first->deleteClient(*this);
         this->_channels.erase(it);  //TODO - ha vor ?
     }
@@ -131,21 +127,11 @@ void Client::leaveChannel(const std::string &name)
 void Client::leavALLChannels(/* const std::string &name */) //TODO kisat
 {
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.begin();
-    // std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it_e = this->_channels.end();
     for (; it != this->_channels.end(); ++it)
     {
-        if (it->second.second == Admin)
-        {
-            if (it->second.first_clients.size() == 1)
-            {
-                // it->second.first->deleteClient(*this);
-                //delet channel;
-            }
-            // it->second.first._clients.begin()++;
-            // it->second.first._clients.begin()->_channels ===== Adimin;
-        }
         it->second.first->deleteClient(*this);
     }
+    this->_channels.clear();
 }
 
 // void Channel::removeClient(Client &client) // TODO offff
@@ -453,3 +439,9 @@ void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
     // reply(RPL_ENDOFNAMES(_nickname, channel->getName()));
     // channel->broadcast(RPL_JOIN(get_prefix(), channel->getName()));
 }
+
+
+// void Client::changeRole(const std::string &name, TypeClient)
+// {
+//     this->_channels.find()
+// }

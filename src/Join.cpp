@@ -61,7 +61,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
 
     if (args[0] == "0") //TODO  harmaracnel!
     {
-        client.leaveChannel();
+        client.leavALLChannels();
         _srv.checkForCloseCannel();
         return ;
     }
@@ -90,7 +90,6 @@ void    Join::execute(Client& client, std::vector<std::string> args)
             client.reply(ERR_USERONCHANNEL(client.getNICK(), client.getNICK(), name + static_cast<char>(1)));
             return ;
         }
-
         if (channel->isInviteOnly()) // TODO 
         {
             client.reply(ERR_INVITEONLYCHAN(client.getNICK(), name + static_cast<char>(1)));
