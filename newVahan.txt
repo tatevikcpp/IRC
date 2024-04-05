@@ -1,4 +1,0 @@
-PASS 12345678
-USER lera 0 * azganun
-NICK lera
-JOIN #mult

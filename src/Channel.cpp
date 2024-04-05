@@ -22,6 +22,9 @@ Channel::Channel(const std::string& name, const std::string& pass, Client *clien
     this->_limit = 0;
 //     this->_name = name;
 //     this->_pass = pass;
+
+    this->_inviteOnly = false;
+    this->_topicMode = true;
 }
 
 Channel::~Channel()
@@ -171,6 +174,16 @@ std::string Channel::getName(void) const
     return (this->_name);
 }
 
+
+void Channel::setInviteOnly(bool mode)
+{
+    this->_inviteOnly = mode;
+}
+
+void Channel::setTopicMode(bool mode)
+{
+    this->_topicMode = mode;
+}
 
 void Channel::set_pass(const std::string& pass)
 {

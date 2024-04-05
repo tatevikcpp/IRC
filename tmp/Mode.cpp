@@ -62,7 +62,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             bool condition = (mode == "-i") ? false : true;
             mode = (mode == "i") ? "+i" : mode;
 
-            // channel->setInviteOnly(condition); TODO
+            channel->setInviteOnly(condition);
             client.sendMsg(RPL_MODE(client.getPrefix(), channelName, mode));
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
@@ -71,7 +71,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             bool condition = (mode == "-t") ? false : true;
             mode = (mode == "t") ? "+t" : mode;
 
-            // channel->setTopicMode(condition); TODO
+            channel->setTopicMode(condition);
             client.sendMsg(RPL_MODE(client.getPrefix(), channelName, mode));
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
@@ -108,36 +108,36 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
         // MODE +/- o
-        else if (mode == "o" || mode == "+o" || mode == "-o")
-        {
-            if (args.size() < 3)
-            {
-                client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "MODE"));
-                return ;
-            }
+        // else if (mode == "o" || mode == "+o" || mode == "-o")
+        // {
+        //     if (args.size() < 3)
+        //     {
+        //         client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "MODE"));
+        //         return ;
+        //     }
+ 
+        //     std::string nickname = args[2];
+        //     Client* client = channel->getClientByNick(nickname);
+        //     if (!client)
+        //     {
+        //         client.reply(ERR_USERNOTINCHANNEL(client.getNICK(), nickname, channelName + static_cast<char>(1)));
+        //         return ;
+        //     }
 
-            std::string nickname = args[2];
-            Client* client = channel->getClientByNick(nickname);
-            if (!client)
-            {
-                client.reply(ERR_USERNOTINCHANNEL(client.getNICK(), nickname, channelName + static_cast<char>(1)));
-                return ;
-            }
-
-            if (mode != "-o")
-            {
-                client->sendMsg(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are now a channel operator"));
-                channel->addOperator(client);
-            }
-            else
-            {
-                if (!channel->isAdmin(client) && channel->isOperator(client))
-                {
-                    client->sending(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are no longer a channel operator"));
-                    channel->removeOperator(client);
-                }
-            }
-            client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
+        //     if (mode != "-o")
+        //     {
+        //         client->sendMsg(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are now a channel operator"));
+        //         channel->addOperator(client);
+        //     }
+        //     else
+        //     {
+        //         if (!channel->isAdmin(client) && channel->isOperator(client))
+        //         {
+        //             client->sending(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are no longer a channel operator"));
+        //             channel->removeOperator(client);
+        //         }
+        //     }
+        //     client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
     }
 }

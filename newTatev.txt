@@ -1,4 +1,0 @@
-PASS 12345678
-USER anun 0 * azganun
-NICK vahan
-JOIN #mult

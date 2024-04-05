@@ -44,12 +44,18 @@ class Channel
 
         bool emptyClients(void);
 
+        void setInviteOnly(bool mode);
+        bool isInviteOnly(void);
+
+        void setTopicMode(bool mode);
+
     private:
         std::map<int, Client *> _clients;
         std::set<Client *> _admins;
         std::list<Client *> _listClient;
         size_t _limit;
         bool _inviteOnly;
+        bool _topicMode;
     public:
         std::string _name;
         std::string _pass;
