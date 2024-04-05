@@ -365,7 +365,6 @@ void            Client::reply(const std::string& reply)
 
 void Client::reply(const std::string& reply) // TODO kisat!
 {
-    // (void)reply;
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
 
     if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
@@ -377,7 +376,7 @@ void Client::sendMsg(const std::string& msg) // TODO kisat!
 {
     std::string buff = msg + "\r\n";
 
-    if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
+    if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
         std::cerr << "Error: can't send message to client." << std::endl;
 }
 

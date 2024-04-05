@@ -172,6 +172,11 @@ std::string Channel::getName(void) const
 }
 
 
+void Channel::set_pass(const std::string& pass)
+{
+    _pass = pass;
+}
+
 void Channel::broadcast(const std::string& message)
 {
     std::map<int, Client *>::iterator it = this->_clients.begin();

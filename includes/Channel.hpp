@@ -25,6 +25,7 @@ class Channel
         size_t get_limit() const;
         size_t get_size()const;
         std::string get_pass() const;
+        void set_pass(const std::string& pass);
 
         // std::string getName(void) const;
         std::string getName(void) const;
