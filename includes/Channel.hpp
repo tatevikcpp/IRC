@@ -37,6 +37,7 @@ class Channel
 
         void setChannelLimit(int limit);
         int getChannelLimit(void);
+        bool changeClientMode(Client& client, TypeClient);
 
         // std::vector<std::string> get_nicknames(void);
         void nameReply(Client &client);
@@ -46,13 +47,19 @@ class Channel
 
         void setInviteOnly(bool mode);
         bool isInviteOnly(void);
+        bool isOperator(Client& client);
 
         void setTopicMode(bool mode);
+        Client * getClientNick(const std::string& nickname);
+
+        bool isAdmin(const Client& client) const;
 
     private:
         std::map<int, Client *> _clients;
-        std::set<Client *> _admins;
-        std::list<Client *> _listClient;
+        std::set<Client *> _operators;
+        std::list<Client *> _primary;
+        Client *_admin;
+        std::list<Client *> _listOperator;
         size_t _limit;
         bool _inviteOnly;
         bool _topicMode;

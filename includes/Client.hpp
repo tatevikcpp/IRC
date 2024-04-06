@@ -17,7 +17,7 @@ enum TypeClient
 {
     Admin,
     Operator,
-    // Primary
+    Primary
 };
 
 class Client
