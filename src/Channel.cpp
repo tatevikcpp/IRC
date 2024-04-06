@@ -112,8 +112,8 @@ void Channel::deleteClient(Client &client)
     {
         if (this->_listOperator.empty() == false)
         {
-                this->_admin = this->_listOperator.front();
-                this->_listOperator.pop_front();
+            this->_admin = this->_listOperator.front();
+            this->_listOperator.pop_front();
         }
         else if(this->_primary.empty() == false)
         {
@@ -121,6 +121,7 @@ void Channel::deleteClient(Client &client)
             this->_primary.pop_front();
         }
     }
+    client.leaveChannel(this->getName());
 }
 
 bool Channel::changeClientMode(Client& client, TypeClient type)

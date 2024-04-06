@@ -30,16 +30,6 @@ class Command
         virtual void execute(Client& client, std::vector<std::string> args) = 0;
 };
 
-class Notice : public Command
-{
-    public:
-
-        Notice(IRC_Server& srv);
-        ~Notice();
-
-        void    execute(Client& client, std::vector<std::string> args);
-};
-
 class PrivMsg : public Command
 {
     public:

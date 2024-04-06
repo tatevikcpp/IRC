@@ -251,7 +251,7 @@ int IRC_Server::start(void)
     {
         read_fds = master; // copy it
         // _max_fd = _clients.rbegin()->first + 1;
-        _select_fd = select(_fdmax, &read_fds, NULL, NULL, NULL);
+        _select_fd = select(_fdmax, &read_fds, NULL, NULL, NULL); //TODO ogtagorcel write_fds -y
         if (_select_fd == -1)
         {
             std::cout << "stex select" << std::endl;

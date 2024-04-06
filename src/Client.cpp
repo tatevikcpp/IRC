@@ -423,12 +423,10 @@ void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
     {
         // if (channel->_clients.empty())
         // channel.joinClient(*this);
-        this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Admin))); //TODO
+        this->_channels.insert(std::pair<std::string, std::pair<Channel*, TypeClient> >(channel.getName(), std::pair<Channel*, TypeClient>(&channel, Primary)));
     }
     // else
     // {
-    //     this->reply(ERR_USERONCHANNEL(this->getNICK(), this->getNICK(), channel._name + static_cast<char>(1)));
-    //     return ;
 
     // }
 

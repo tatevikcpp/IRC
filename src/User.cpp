@@ -29,7 +29,7 @@ void    User::execute(Client& client, std::vector<std::string> args)
 
     // client.set_username(args[0]);
     // client.set_realname(args[3]);
-    client.setUSER(args[0], args[0]);
+    client.setUSER(args[0], args[3]);
     // client.welcome();
     client.checkForRegistered();
 }
