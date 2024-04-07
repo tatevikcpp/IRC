@@ -7,7 +7,7 @@ Join::~Join() {}
 // syntax: JOIN <channels> [<keys>]
 
 
-std::map<std::string, std::string> stringToMap(std::string &keys, std::string &values)
+std::map<std::string, std::string> stringToMap(std::string &keys, std::string &values) // TODO 
 {
     std::map<std::string, std::string> result;
 
@@ -49,7 +49,10 @@ void    Join::execute(Client& client, std::vector<std::string> args)
 {
     std::vector<std::string>::iterator it = std::find(args.begin(), args.end(), "");
     std::vector<std::string> channelNames(args.begin(), it);
-    std::vector<std::string> chanelKeys(it, args.end());
+
+    std::vector<std::string> chanelKeys;
+    if (it != args.end())
+        chanelKeys.insert(chanelKeys.begin(), it + 1, args.end()) /* = std::vector<std::string>(it + 1, args.end()) */;
 
     if (!client.isRegistered())
     {
@@ -69,6 +72,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
         _srv.checkForCloseCannel();
         return ;
     }
+    std::cout << "channelNames.size(): " << channelNames.size() << std::endl; 
     for (size_t i = 0; i < channelNames.size(); i++)
     {
         std::string name = channelNames[i];
@@ -79,41 +83,61 @@ void    Join::execute(Client& client, std::vector<std::string> args)
         // std::map<std::string, std::string> ch = stringToMap(name, pass);
         // for (std::map<std::string, std::string>::iterator it = ch.begin(); it != ch.end(); ++it)
         // {
-            // name = it->first;
-            // pass = it->second;
+        //     name = it->first;
+        //     pass = it->second;
             if (name[0] != '#' && name[0] != '&')
             {
+                std::cout << "return1" << std::endl;
                 client.reply(ERR_BADCHANMASK(client.getNICK(), name + static_cast<char>(1)));
-                return ;
+                // return ;
+                // break;
+                continue;
             }
+
+            name.erase(0, 1);
             Channel* channel = _srv.getChannel(name);
             if (!channel)
             {
+                std::cout << "return2" << std::endl;
                 channel = _srv.createChannel(name, pass, client);
                 channel->nameReply(client);
-                return ;
+                // return ;
+                // break;
+                continue;
             }
             else  if (channel->isInChannel(client))
             {
+                std::cout << "return3" << std::endl;
                 client.reply(ERR_USERONCHANNEL(client.getNICK(), client.getNICK(), name + static_cast<char>(1)));
-                return ;
+                // return ;
+                // break;
+                continue;
             }
             if (channel->isInviteOnly()) // TODO 
             {
+                std::cout << "return4" << std::endl;
                 client.reply(ERR_INVITEONLYCHAN(client.getNICK(), name + static_cast<char>(1)));
-                return ;
+                // return ;
+                // break;
+                continue;
             }
 
             if (channel->channelIsFull())
             {
+                std::cout << "return5" << std::endl;
                 client.reply(ERR_CHANNELISFULL(client.getNICK(), name + static_cast<char>(1)));
-                return ;
+                // return ;
+                // break;
+                continue;
             }
 
             if (channel->get_pass() != pass)
             {
+                std::cout << "return6" << std::endl;
                 client.reply(ERR_BADCHANNELKEY(client.getNICK(), name, "Cannot join channel (+k)"));
-                return ;
+                // return ;
+                // break;
+                continue;
             }
             channel->joinClient(client);
             channel->nameReply(client);

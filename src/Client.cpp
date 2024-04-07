@@ -232,6 +232,15 @@ std::string Client::getCommand(void)
     return (this->_command);
 }
 
+std::string Client::getMSG(void) const
+{
+    return (_msg);
+}
+
+const std::string& Client::getMSG(void)
+{
+    return (_msg);
+}
 
 // void Client::setArguments(void)
 // {
@@ -261,7 +270,8 @@ void Client::setArguments(void)
 
         if (pos != std::string::npos)
         {
-            std::string msg = _vecBuffer[0].erase(_vecBuffer[0].find(":"));
+            _msg = _vecBuffer[0].substr(pos + 1);
+            _vecBuffer[0].erase(pos);
         }
         
         std::vector<std::string> splitedVec = split(_vecBuffer[0], ' ');

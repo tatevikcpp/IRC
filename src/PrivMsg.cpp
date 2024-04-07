@@ -6,7 +6,7 @@ PrivMsg::~PrivMsg() {}
 
 // syntax: PRIVMSG <msgtarget> :<message>
 
-void    PrivMsg::execute(Client& client, std::vector<std::string> args)
+void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO send all
 {
     if (!client.isRegistered())
     {
@@ -18,7 +18,9 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args)
         client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "PRIVMSG"));
         return ;
     }
-    if (args.size() < 2)
+
+    std::string message = client.getMSG();
+    if (message.empty())
     {
         client.reply(ERR_NOTEXTTOSEND(client.getNICK()));
         return ;
@@ -27,64 +29,69 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args)
     // extract the target and the message
 
     // std::vector<std::string> target = args[0];
-    std::string target = args[0];
-    std::string message;
+    // std::string target = args[0];
 
-    std::vector<std::string>::iterator it = args.begin() + 1;
-    std::vector<std::string>::iterator end = args.end();
+    // std::vector<std::string>::iterator it = args.begin() + 1;
+    // std::vector<std::string>::iterator end = args.end();
 
-    while (it != end)
-    {
-        message.append(*it + " ");
-        it++;
-    }
+    // while (it != end)
+    // {
+    //     message.append(*it + " ");
+    //     it++;
+    // }
 
-    if (message[0] == ':')
-        message.erase(message.begin());
+    // if (message[0] == ':')
+    //     message.erase(message.begin());
 
     // if notice is for a channel
 
-    if (target[0] == '#' || target[0] == '&')
+    for (size_t i = 0; i < args.size(); i++)
     {
-        Channel* channel =  _srv.getChannel(target);
-        // if (client._channels.find(target) == client._channels.end())
-
-        // channel not found
-        if (!channel)
+        std::string target = args[i];
+        if (target[i] == '#' || target[i] == '&')
         {
-            // client.reply(ERR_NOSUCHCHANNEL(client.getNick(), target));
-            client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
-			return;
+            target.erase(0, 1);
+            Channel* channel = _srv.getChannel(target);
+            if (!channel)
+            {
+                client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
+                return ;
+            }
+            if (!channel->isInChannel(client))
+            {
+                client.reply(ERR_CANNOTSENDTOCHAN(client.getNICK(), target));
+                return ;
+            }
+
+            // if (message == "BOT" || (message.find(' ') != std::string::npos
+            //     && message.substr(0, message.find(' ')) == "BOT"))
+            // {
+            //     _bot->Fetch(message);
+            //     channel->sendingForBot(C, message, "PRIVMSG");
+            //     DEBUGGER();
+            // }
+            // else
+            // {
+            //     channel->sending(C, message, "PRIVMSG");
+            //     DEBUGGER();
+            // }
         }
+        else
+        {
+            Client* _client = _srv.getClient(target);
+            if (!_client)
+            {
+                client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
+                return ;
+            }
 
-        // channel is not for external messages
-        // if (!channel->ext_msg())
-        // {
-        //     std::vector<std::string> nicknames = channel->getNick();
+            // client->sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
+            // client.sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
+            _client->sendMsg(message);
 
-        //     std::vector<std::string>::iterator it = nicknames.begin();
-        //     std::vector<std::string>::iterator end = nicknames.end();
-
-        //     // check if client is in the channel
-        //     while (it != end)
-        //     {
-        //         if (*it == client.getNick())
-        //             break;
-
-        //         it++;
-        //     }
-
-        //     // if not in channel
-        //     if (it == end)
-        //     {
-        //         client.reply(ERR_CANNOTSENDTOCHAN(client.getNick(), target));
-        //         return;
-        //     }
-        // }
-
-        // channel->broadcast(RPL_PRIVMSG(client.getPrefix(), target, message), client);
-        return;
+        }
     }
+
 
     // else if notice is for a client
 
@@ -96,3 +103,99 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args)
     // }
     // dest->write(RPL_PRIVMSG(client.getPrefix(), target, message));
 }
+
+
+
+
+
+// void Command::commandPRIVMSG(Client *C)
+// {
+//     DEBUGGER();
+//     if (!C->isRegistered())
+//     {
+//         C->reply(ERR_NOTREGISTERED(C->getNICK()));
+//         DEBUGGER();
+//         return;
+//     }
+//     if (_arg.empty())
+//     {
+//         C->reply(ERR_NEEDMOREPARAMS(C->getNICK(), "PRIVMSG"));
+//         DEBUGGER();
+//         return ;
+//     }
+//     if (_arg.size() < 2)
+//     {
+//         C->reply(ERR_NOTEXTTOSEND(C->getNICK()));
+//         DEBUGGER();
+//         return ;
+//     }
+     
+//     DEBUGGER();
+//     std::vector<std::string> targets;
+//     std::string keys = _arg[0];
+
+//     keys += ',';
+//     size_t start = 0;
+//     size_t index = keys.find(',', start);
+//     DEBUGGER();
+//     while(index != std::string::npos)
+//     {
+//         targets.push_back(keys.substr(start, index - start));
+//         start = index + 1;
+//         index = keys.find(',', start);
+//     }
+
+//     DEBUGGER();
+//     size_t i = 1;
+//     std::string message = _arg[i++];
+//     for ( ; i < _arg.size(); ++i)
+//         message.append(" " + _arg[i]);
+    
+//     DEBUGGER();
+//     for (size_t i = 0; i < targets.size(); ++i)    
+//     {
+//         if (targets[i][0] == '#' || targets[i][0] == '&')
+//         {
+//             Channel* channel = _server->getChannel(targets[i]);
+//             if (!channel)
+//             {
+//                 C->reply(ERR_NOSUCHNICK(C->getNICK(), targets[i]));
+//                 return ;
+//             }
+//             if (!channel->isInChannel(C))
+//             {
+//                 C->reply(ERR_CANNOTSENDTOCHAN(C->getNICK(), targets[i]));
+//                 return ;
+//             }
+//             DEBUGGER();
+
+
+//             if (message == "BOT" || (message.find(' ') != std::string::npos
+//                 && message.substr(0, message.find(' ')) == "BOT"))
+//             {
+//                 _bot->Fetch(message);
+//                 channel->sendingForBot(C, message, "PRIVMSG");
+//                 DEBUGGER();
+//             }
+//             else
+//             {
+//                 channel->sending(C, message, "PRIVMSG");
+//                 DEBUGGER();
+//             }
+//         }
+//         else
+//         {
+//             Client* client = _server->getClient(targets[i]);
+//             if (!client)
+//             {
+//                 C->reply(ERR_NOSUCHNICK(C->getNICK(), targets[i]));
+//                 DEBUGGER();
+//                 return ;
+//             }
+//             DEBUGGER();
+
+//             client->sending(RPL_MSG(C->getPrefix(), "PRIVMSG", targets[i], message));
+//         }
+//     }
+//     DEBUGGER();
+// }

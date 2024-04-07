@@ -6,7 +6,7 @@ User::~User() {}
 
 // stntax: USER <username> <hostname> <servername> <realname>
 
-void    User::execute(Client& client, std::vector<std::string> args)
+void    User::execute(Client& client, std::vector<std::string> args) //USER -y 2-rd angam ell a anum
 {
     if (client.getPASS().empty())
     {
