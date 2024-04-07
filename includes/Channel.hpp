@@ -3,9 +3,11 @@
 #include "Client.hpp"
 #include <map>
 #include <set>
+
 // #include <queue>
 // deleteClient, joinClient, Channel, ~Channel
 class Client;
+
 class Channel
 {
     public:
@@ -20,7 +22,7 @@ class Channel
         // void addOperator(Client *clinet);
         bool channelIsFull(void);
         bool emptyChannel(void);
-        bool isInviteOnly(void);
+        // bool isInviteOnly(void);
 
         size_t get_limit() const;
         size_t get_size()const;
@@ -37,7 +39,7 @@ class Channel
 
         void setChannelLimit(int limit);
         int getChannelLimit(void);
-        bool changeClientMode(Client& client, TypeClient);
+        bool changeClientMode(Client& client, /* TypeClient */ int type);
 
         // std::vector<std::string> get_nicknames(void);
         void nameReply(Client &client);

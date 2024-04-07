@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <map>
+#include "Channel.hpp"
 
 #include "Numeric_and_error_replies.hpp"
 

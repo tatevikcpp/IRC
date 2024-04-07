@@ -26,7 +26,8 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args)
 
     // extract the target and the message
 
-    std::vector<std::string> target = args[0];
+    // std::vector<std::string> target = args[0];
+    std::string target = args[0];
     std::string message;
 
     std::vector<std::string>::iterator it = args.begin() + 1;
@@ -57,41 +58,41 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args)
         }
 
         // channel is not for external messages
-        if (!channel->ext_msg())
-        {
-            std::vector<std::string> nicknames = channel->get_nicknames();
+        // if (!channel->ext_msg())
+        // {
+        //     std::vector<std::string> nicknames = channel->getNick();
 
-            std::vector<std::string>::iterator it = nicknames.begin();
-            std::vector<std::string>::iterator end = nicknames.end();
+        //     std::vector<std::string>::iterator it = nicknames.begin();
+        //     std::vector<std::string>::iterator end = nicknames.end();
 
-            // check if client is in the channel
-            while (it != end)
-            {
-                if (*it == client.get_nickname())
-                    break;
+        //     // check if client is in the channel
+        //     while (it != end)
+        //     {
+        //         if (*it == client.getNick())
+        //             break;
 
-                it++;
-            }
+        //         it++;
+        //     }
 
-            // if not in channel
-            if (it == end)
-            {
-                client.reply(ERR_CANNOTSENDTOCHAN(client.getNick(), target));
-                return;
-            }
-        }
+        //     // if not in channel
+        //     if (it == end)
+        //     {
+        //         client.reply(ERR_CANNOTSENDTOCHAN(client.getNick(), target));
+        //         return;
+        //     }
+        // }
 
-        channel->broadcast(RPL_PRIVMSG(client.getPrefix(), target, message), client);
+        // channel->broadcast(RPL_PRIVMSG(client.getPrefix(), target, message), client);
         return;
     }
 
     // else if notice is for a client
 
-    Client  *dest = _srv.getClient(target);
-    if (!dest)
-    {
-        client.reply(ERR_NOSUCHNICK(client.getNick(), target));
-		return;
-    }
-    dest->write(RPL_PRIVMSG(client.getPrefix(), target, message));
+    // Client  *dest = _srv.getClient(target);
+    // if (!dest)
+    // {
+    //     client.reply(ERR_NOSUCHNICK(client.getNick(), target));
+	// 	return;
+    // }
+    // dest->write(RPL_PRIVMSG(client.getPrefix(), target, message));
 }

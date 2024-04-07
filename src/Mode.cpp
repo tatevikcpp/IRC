@@ -103,7 +103,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         // MODE +/- o
         else if (mode == "o" || mode == "+o" || mode == "-o")
         {
-            bool condition = (mode == "-o") ? false : true;
+            // bool condition = (mode == "-o") ? false : true;
             mode = (mode == "o") ? "+o" : mode;
 
             if (args.size() < 2) // TODO erevi < 3

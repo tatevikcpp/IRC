@@ -4,6 +4,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Command.hpp"
+#include "utils.hpp"
 
 
 // esim e

@@ -1,3 +1,4 @@
+#include "utils.hpp"
 #include <iostream>
 #include <sstream>
 
@@ -40,3 +41,26 @@ std::string my_to_string(size_t num)
     str << num;
     return (str.str());
 };
+
+
+//*******************************************************************
+
+
+std::vector<std::string>  split(const std::string &str, char c)
+{
+    std::stringstream test(str);
+    std::string segment;
+    std::vector<std::string> seglist;
+
+    while(std::getline(test, segment, c))
+    {
+        if (segment.empty() == false)
+        {
+            seglist.push_back(segment);
+        }
+    }
+    return (seglist);
+}
+
+
+//**************************************************************************

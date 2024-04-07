@@ -36,11 +36,9 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["JOIN"] = new Join(*this);
     _commands["PART"] = new Part(*this);
     // _commands["KICK"] = new Kick(*this);
-    // _commands["MODE"] = new Mode(*this);
+    _commands["MODE"] = new Mode(*this);
 
-	// _commands["PRIVMSG"] = new PrivMsg(*this);
-	// _commands["NOTICE"] = new Notice(*this);
-
+	_commands["PRIVMSG"] = new PrivMsg(*this);
     // this->_command = new Command(this);
 
 }
@@ -166,6 +164,10 @@ void IRC_Server::checkForCloseCannel(void)
 }
 
 
+
+
+
+
 int IRC_Server::start(void)
 {
     fd_set master;    // master file descriptor list
@@ -240,7 +242,7 @@ int IRC_Server::start(void)
         exit(3);
     }
 
-    // add the listener to the master set
+    // add the listener to the master set 
     FD_SET(this->_listener, &master);
 
     // keep track of the biggest file descriptor

@@ -4,6 +4,7 @@
 #include <utility>
 #include "Numeric_and_error_replies.hpp"
 
+
 // void *get_in_addr(struct sockaddr *sa)
 // {
 //     if (sa->sa_family == AF_INET)
@@ -231,15 +232,55 @@ std::string Client::getCommand(void)
     return (this->_command);
 }
 
+
+// void Client::setArguments(void)
+// {
+//     _arguments.clear();
+//     _command.clear();
+//     if (!this->_vecBuffer.empty() && !this->_vecBuffer[0].empty())
+//     {
+//         std::vector<std::string> splitedVec = split(_vecBuffer[0], ' ');
+//         _command = splitedVec[0];
+//         _arguments = std::vector<std::string>(splitedVec.begin() + 1, splitedVec.end());
+//     }
+// }
+
+
 void Client::setArguments(void)
 {
+    std::cout << "_vecBuffer : " << _vecBuffer[0] << std::endl;
     _arguments.clear();
     _command.clear();
+
+
     if (!this->_vecBuffer.empty() && !this->_vecBuffer[0].empty())
     {
-        std::vector<std::string> splitedVec = split(_vecBuffer[0]);
-        _command = splitedVec[0];
-        _arguments = std::vector<std::string>(splitedVec.begin() + 1, splitedVec.end());
+        _command = _vecBuffer[0].substr(0, _vecBuffer[0].find(" "));
+        _vecBuffer[0].erase(0, _vecBuffer[0].find(" "));
+        size_t pos = _vecBuffer[0].find(":");
+
+        if (pos != std::string::npos)
+        {
+            std::string msg = _vecBuffer[0].erase(_vecBuffer[0].find(":"));
+        }
+        
+        std::vector<std::string> splitedVec = split(_vecBuffer[0], ' ');
+        for (size_t i = 0; i < splitedVec.size(); ++i)
+        {
+            std::vector<std::string> tmp = split(splitedVec[i], ',');
+
+            for (size_t i = 0; i < tmp.size(); ++i)
+            {
+                _arguments.push_back(tmp[i]);
+            }
+            if (i + 1 < splitedVec.size() && splitedVec[i].back() != ',' && splitedVec[i + 1].front() != ',' 
+                && (_command == "JOIN" || _command == "PRIVMSG"))
+            {
+                _arguments.push_back("");
+            }
+            
+        }
+        
     }
 }
 

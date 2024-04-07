@@ -124,7 +124,7 @@ void Channel::deleteClient(Client &client)
     client.leaveChannel(this->getName());
 }
 
-bool Channel::changeClientMode(Client& client, TypeClient type)
+bool Channel::changeClientMode(Client& client, /* TypeClient */ int type)
 {
     if (type == Operator)
     {
