@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "Numeric_and_error_replies.hpp"
 #include <algorithm>
 
 void Channel::print() const {
@@ -34,6 +35,19 @@ Channel::~Channel()
 
 }
 
+void Channel::sendMsg(Client &client, const std::string &msg, const std::string& cmd)
+{
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+
+    for(; it != this->_clients.end(); ++it)
+    {
+        if (&client != it->second)
+        {
+            // it->second->sendMsg(RPL_MSG(client.getPrefix(), cmd, _name, msg));
+            it->second->reply(RPL_MSG(client.getPrefix(), cmd, _name, msg));
+        }
+    }    
+}
 
 // std::vector<std::string>    Channel::get_nicknames()
 // {

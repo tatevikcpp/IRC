@@ -62,6 +62,8 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
                 client.reply(ERR_CANNOTSENDTOCHAN(client.getNICK(), target));
                 return ;
             }
+            
+            channel->sendMsg(client, message, "PRIVMSG");
 
             // if (message == "BOT" || (message.find(' ') != std::string::npos
             //     && message.substr(0, message.find(' ')) == "BOT"))
@@ -78,8 +80,8 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
         }
         else
         {
-            Client* _client = _srv.getClient(target);
-            if (!_client)
+            Client* recv_client = _srv.getClient(target);
+            if (!recv_client)
             {
                 client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
                 return ;
@@ -87,7 +89,8 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
 
             // client->sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
             // client.sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
-            _client->sendMsg(message);
+            // recv_client->sendMsg(message);
+            recv_client->reply(message);
 
         }
     }

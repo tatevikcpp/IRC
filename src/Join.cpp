@@ -76,7 +76,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
     for (size_t i = 0; i < channelNames.size(); i++)
     {
         std::string name = channelNames[i];
-        std::string pass = args.size() > 1 ? chanelKeys[i] : "";
+        std::string pass = i < chanelKeys.size() ? chanelKeys[i] : "";
 
         std::cout << "name = " << name << std::endl << "pass = " << pass << std::endl;
 

@@ -55,6 +55,7 @@ class Channel
         Client * getClientNick(const std::string& nickname);
 
         bool isAdmin(const Client& client) const;
+        void sendMsg(Client &client, const std::string &msg, const std::string& cmd);
 
     private:
         std::map<int, Client *> _clients;
