@@ -55,12 +55,12 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
             if (!channel)
             {
                 client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
-                return ;
+                continue; ;
             }
             if (!channel->isInChannel(client))
             {
                 client.reply(ERR_CANNOTSENDTOCHAN(client.getNICK(), target));
-                return ;
+                continue; ;
             }
             
             channel->sendMsg(client, message, "PRIVMSG");
@@ -83,28 +83,17 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
             Client* recv_client = _srv.getClient(target);
             if (!recv_client)
             {
-                client.reply(ERR_NOSUCHNICK(client.getNICK(), target));
-                return ;
+                client.sendMsg(ERR_NOSUCHNICK(client.getNICK(), target));
+                continue; ;
             }
 
             // client->sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
             // client.sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
             // recv_client->sendMsg(message);
-            recv_client->reply(message);
+            recv_client->sendMsg(RPL_MSG(client.getPrefix(), "PRIVMSG", target, message));
 
         }
     }
-
-
-    // else if notice is for a client
-
-    // Client  *dest = _srv.getClient(target);
-    // if (!dest)
-    // {
-    //     client.reply(ERR_NOSUCHNICK(client.getNick(), target));
-	// 	return;
-    // }
-    // dest->write(RPL_PRIVMSG(client.getPrefix(), target, message));
 }
 
 

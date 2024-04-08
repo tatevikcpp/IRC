@@ -40,6 +40,8 @@ class PrivMsg : public Command
         void    execute(Client& client, std::vector<std::string> args);
 };
 
+
+
 class Part : public Command
 {
     public:
@@ -109,6 +111,18 @@ class Kick : public Command
 
         void    execute(Client& client, std::vector<std::string> args);
 };
+
+
+class Invite : public Command
+{
+    public:
+
+        Invite(IRC_Server& srv);
+        ~Invite();
+
+        void    execute(Client& client, std::vector<std::string> args);
+};
+
 
 class Ping : public Command
 {

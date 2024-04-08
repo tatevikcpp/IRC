@@ -34,9 +34,10 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["PING"] = new Ping(*this);
     _commands["PONG"] = new Pong(*this);
     _commands["JOIN"] = new Join(*this);
-    _commands["PART"] = new Part(*this);
-    // _commands["KICK"] = new Kick(*this);
+    // _commands["PART"] = new Part(*this);
+    _commands["KICK"] = new Kick(*this);
     _commands["MODE"] = new Mode(*this);
+    _commands["INVITE"] = new Mode(*this);
 
 	_commands["PRIVMSG"] = new PrivMsg(*this);
     // this->_command = new Command(this);

@@ -44,7 +44,7 @@ void Channel::sendMsg(Client &client, const std::string &msg, const std::string&
         if (&client != it->second)
         {
             // it->second->sendMsg(RPL_MSG(client.getPrefix(), cmd, _name, msg));
-            it->second->reply(RPL_MSG(client.getPrefix(), cmd, _name, msg));
+            it->second->sendMsg(RPL_MSG(client.getPrefix(), cmd, _name, msg));
         }
     }    
 }

@@ -284,7 +284,7 @@ void Client::setArguments(void)
                 _arguments.push_back(tmp[i]);
             }
             if (i + 1 < splitedVec.size() && splitedVec[i].back() != ',' && splitedVec[i + 1].front() != ',' 
-                && (_command == "JOIN" || _command == "PRIVMSG"))
+                && (_command == "JOIN" || _command == "PRIVMSG" || _command == "KICK"))
             {
                 _arguments.push_back("");
             }
