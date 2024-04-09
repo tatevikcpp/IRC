@@ -55,7 +55,7 @@ class Client
         std::vector<std::string> getArguments(void);
         std::string getName(void) const;
 
-        std::string getPrefix(void);
+        std::string getPrefix(void) const;
         void reply(const std::string& reply);
         void sendMsg(const std::string& msg);
         

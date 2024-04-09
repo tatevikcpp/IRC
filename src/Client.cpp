@@ -436,7 +436,7 @@ std::string Client::getNICK(void) const
     return (this->_nick);
 }
 
-std::string Client::getPrefix(void)
+std::string Client::getPrefix(void) const
 {
     std::string prefix = this->_nick;
 

@@ -47,11 +47,15 @@ class Channel
 
         bool emptyClients(void);
 
+       const Client &getAdmin() const;
+
         void setInviteOnly(bool mode);
         bool isInviteOnly(void);
-        bool isOperator(Client& client);
+        bool isOperator(Client& client) const;
+        bool isEmpty() const;
 
         void setTopicMode(bool mode);
+        bool isTopicModeOn() const;
         Client * getClientNick(const std::string& nickname);
 
         bool isAdmin(const Client& client) const;
@@ -69,4 +73,5 @@ class Channel
     public:
         std::string _name;
         std::string _pass;
+        std::string _topic;
 };

@@ -36,10 +36,21 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
     
     std::string channelName = channelNames[0];
 
+    if (channelName.front() == '#')
+    {
+        channelName.erase(0, 1);
+    }
+
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
     {
         client.reply(ERR_NOSUCHCHANNEL(client.getNICK(), channelName + static_cast<char>(1)));
+        return ;
+    }
+
+    if ((!channel->isOperator(client) && !channel->isAdmin(client)))
+    {
+        client.reply(ERR_CHANOPRIVSNEEDED(client.getNICK(), channelName + static_cast<char>(1)));
         return ;
     }
 
@@ -61,26 +72,26 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
             return ;
         }
 
-        if (!channel->isOperator(*clientKick))
+        if (!(channel->isAdmin(client)) && channel->isAdmin(*clientKick))
         {
             client.reply(ERR_CHANOPRIVSNEEDED(client.getNICK(), channelName + static_cast<char>(1)));
             return ;
         }
-
-        if (!(channel->isAdmin(*clientKick)) && channel->isAdmin(*clientKick))
-        {
-            client.reply(ERR_CHANOPRIVSNEEDED(client.getNICK(), channelName + static_cast<char>(1)));
-            return ;
-        }
-
         
-       if (comment.empty())
+        if (comment.empty())
             comment = "No reason specified.";
 
         channel->deleteClient(*clientKick);
-        clientKick->reply(comment);
+        if (channel->isEmpty()) {
+            
+        }
+        clientKick->sendMsg(RPL_KICK(channel->getAdmin().getPrefix(), channel->getName(), client.getNICK(), comment));
+        if (channel->isEmpty())
+        {
+            _srv.delChannel(channel);
+        }
         // channel->deleteClient(client, comment, client->ifClosed());
-        // client->leavingForChannels(channel, comment);
+        // client->leavingForChannels(channel, comment);  // TODO petqa nayel
     }
-    _srv.checkForCloseCannel();
+    // _srv.checkForCloseCannel();  // TODO already done aystex line 88 _srv.delChannel(channel);
 }

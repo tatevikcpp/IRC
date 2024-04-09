@@ -21,11 +21,12 @@ void    User::execute(Client& client, std::vector<std::string> args) //USER -y 2
         return;
     }
 
-    if (args.size() < 4)
+    if (args.size() < 4 || args[1] != "0" || args[2] != "*")
     {
         client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "USER"));
         return;
     }
+
 
     // client.set_username(args[0]);
     // client.set_realname(args[3]);

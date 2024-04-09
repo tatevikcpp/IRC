@@ -153,3 +153,13 @@ class Mode : public Command
 
         void    execute(Client& client, std::vector<std::string> args);
 };
+
+class Topic : public Command
+{
+    public:
+
+        Topic(IRC_Server& srv);
+        ~Topic();
+
+        void    execute(Client& client, std::vector<std::string> args);
+};

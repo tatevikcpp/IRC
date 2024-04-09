@@ -11,8 +11,6 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
 {
     // hanling errors
 
-std::cout << __PRETTY_FUNCTION__ << std::endl;
-
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
@@ -41,7 +39,7 @@ std::cout << __PRETTY_FUNCTION__ << std::endl;
         return ;
     }
 
-    if (!channel->isOperator(client))
+    if (!channel->isOperator(client) && !channel->isAdmin(client))
     {
         client.reply(ERR_CHANOPRIVSNEEDED(client.getNICK(), channelName + static_cast<char>(1)));
         return ;
@@ -114,7 +112,8 @@ std::cout << __PRETTY_FUNCTION__ << std::endl;
                 return ;
             }
  
-            std::string nickname = args[1]; 
+            std::string nickname = args[1];
+            nickname.erase(0, 1);
             Client* ptr = channel->getClientNick(nickname);
             if (!ptr)
             {
@@ -169,3 +168,7 @@ std::cout << __PRETTY_FUNCTION__ << std::endl;
         }
     }
 }
+
+
+
+// MODE #foobar +o bunnyMO

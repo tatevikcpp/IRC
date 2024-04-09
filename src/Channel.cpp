@@ -9,7 +9,8 @@ void Channel::print() const {
     std::cout << "size = " << this->_clients.size() << std::endl;
     while (it != _clients.end())
     {
-        std::cout << it->second->getNICK() << std::endl;
+        std::string name = it->second->getNICK();
+        std::cout << name << ", isAdmin = " << this->isAdmin(*it->second) << ", isOperator = " << this->isOperator(*it->second) << std::endl;
         it++;
     }
 
@@ -119,8 +120,16 @@ void Channel::deleteClient(Client &client)
     }
 
     this->_clients.erase(client._fd);
-    this->_primary.erase(std::find(this->_primary.begin(), this->_primary.end(), &client)); // TODO lav kashxati
-    this->_listOperator.erase(std::find(this->_listOperator.begin(), this->_listOperator.end(), &client));
+    std::list<Client *>::iterator itPrimary = std::find(this->_primary.begin(), this->_primary.end(), &client);
+    if (itPrimary != this->_primary.end())
+    {
+        this->_primary.erase(itPrimary); // TODO lav kashxati
+    }
+    std::list<Client *>::iterator itOperator = std::find(this->_listOperator.begin(), this->_listOperator.end(), &client);
+    if (itOperator != this->_listOperator.end())
+    {
+        this->_listOperator.erase(itOperator);
+    }
 
     if (&client == this->_admin)
     {
@@ -235,7 +244,7 @@ std::string Channel::getName(void) const
     return (this->_name);
 }
 
-bool Channel::isOperator(Client& client)
+bool Channel::isOperator(Client& client) const
 {
     std::set<Client *>::iterator it = this->_operators.find(&client);
     if (it != this->_operators.end())
@@ -253,6 +262,11 @@ void Channel::setTopicMode(bool mode)
 {
     this->_topicMode = mode;
 }
+
+bool Channel::isTopicModeOn() const
+{
+    return (this->_topicMode);
+};
 
 void Channel::set_pass(const std::string& pass)
 {
@@ -322,3 +336,13 @@ bool Channel::isInChannel(Client& client)
         return false;
     return true;
 }
+
+const Client &Channel::getAdmin() const
+{
+    return (*_admin);
+};
+
+bool Channel::isEmpty() const
+{
+    return (_clients.empty());
+};

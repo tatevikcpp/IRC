@@ -36,6 +36,7 @@ class IRC_Server
         IRC_Server(const char *port, const char *password);
         ~IRC_Server();
         void addChannel(Channel &);
+        void delChannel(Channel *);
         Channel* createChannel(const std::string& name, const std::string& pass, Client &client);
         void addClientToChannel(const std::string& name, Client &);
         int start(void);

@@ -40,6 +40,7 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["INVITE"] = new Invite(*this);
 
 	_commands["PRIVMSG"] = new PrivMsg(*this);
+    _commands["TOPIC"] = new Topic(*this);
     // this->_command = new Command(this);
 
 }
@@ -120,6 +121,15 @@ void IRC_Server::addChannel(Channel &channel)
     if (this->_channels.insert(std::make_pair(channel._name, &channel)).second == false)
     {
         std::cout << "alredy exist\n";
+    }
+}
+
+void IRC_Server::delChannel(Channel *channel)
+{
+    if (channel)
+    {
+        this->_channels.erase(channel->_name);
+        delete channel;
     }
 }
 
