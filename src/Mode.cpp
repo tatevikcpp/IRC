@@ -11,6 +11,8 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
 {
     // hanling errors
 
+std::cout << __PRETTY_FUNCTION__ << std::endl;
+
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));

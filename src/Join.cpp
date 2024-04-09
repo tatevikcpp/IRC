@@ -7,46 +7,47 @@ Join::~Join() {}
 // syntax: JOIN <channels> [<keys>]
 
 
-std::map<std::string, std::string> stringToMap(std::string &keys, std::string &values) // TODO 
-{
-    std::map<std::string, std::string> result;
+// std::map<std::string, std::string> stringToMap(std::string &keys, std::string &values) // TODO 
+// {
+//     std::map<std::string, std::string> result;
 
-    std::vector <std::string> key;
-    std::vector <std::string> value;
-    keys += ',';
-    values += ',';
-    size_t start = 0;
-    size_t index = keys.find(',', start);
-    while(index != std::string::npos)
-    {
-        key.push_back(keys.substr(start, index - start));
-        start = index + 1;
-        index = keys.find(',', start);
-    }
+//     std::vector <std::string> key;
+//     std::vector <std::string> value;
+//     keys += ',';
+//     values += ',';
+//     size_t start = 0;
+//     size_t index = keys.find(',', start);
+//     while(index != std::string::npos)
+//     {
+//         key.push_back(keys.substr(start, index - start));
+//         start = index + 1;
+//         index = keys.find(',', start);
+//     }
 
-    start = 0;
-    index = values.find(',', start);
-    while(index != std::string::npos)
-    {
-        value.push_back(values.substr(start, index - start));
-        start = index + 1;
-        index = values.find(',', start);
-    }
-    start = 0;
-    index =  key.size();
-    for( ; start < index; ++start)
-    {
-        if (!key[start].empty())
-        {
-            result[key[start]] = start >= value.size() ? "" : value[start];
-        }
-    }
+//     start = 0;
+//     index = values.find(',', start);
+//     while(index != std::string::npos)
+//     {
+//         value.push_back(values.substr(start, index - start));
+//         start = index + 1;
+//         index = values.find(',', start);
+//     }
+//     start = 0;
+//     index =  key.size();
+//     for( ; start < index; ++start)
+//     {
+//         if (!key[start].empty())
+//         {
+//             result[key[start]] = start >= value.size() ? "" : value[start];
+//         }
+//     }
     
-    return result;
-}
+//     return result;
+// }
 
 void    Join::execute(Client& client, std::vector<std::string> args)
 {
+     std::cout << "JOIN execute" << std::endl;
     std::vector<std::string>::iterator it = std::find(args.begin(), args.end(), "");
     std::vector<std::string> channelNames(args.begin(), it);
 
@@ -66,7 +67,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
         return ;
     }
 
-    if (args[0] == "0") //TODO  harmaracnel!
+    if (args[0] == "0")
     {
         client.leavALLChannels();
         _srv.checkForCloseCannel();
@@ -140,7 +141,10 @@ void    Join::execute(Client& client, std::vector<std::string> args)
                 continue;
             }
             channel->joinClient(client);
+
             channel->nameReply(client);
+
         // }
     }
+            _srv.print_channels();
 }

@@ -37,7 +37,7 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     // _commands["PART"] = new Part(*this);
     _commands["KICK"] = new Kick(*this);
     _commands["MODE"] = new Mode(*this);
-    _commands["INVITE"] = new Mode(*this);
+    _commands["INVITE"] = new Invite(*this);
 
 	_commands["PRIVMSG"] = new PrivMsg(*this);
     // this->_command = new Command(this);
@@ -135,7 +135,8 @@ void IRC_Server::addClientToChannel(const std::string& name, Client &client)
 Channel* IRC_Server::createChannel(const std::string& name, const std::string& pass, Client &client)
 {
     Channel *new_channel = new Channel(name, pass, &client);
-    this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
+    this->addChannel(*new_channel);
+    // this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
     // client._channels.insert(std::pair<std::string,std::pair<Channel*, TypeClient> >((new_channel->getName(), (new_channel, Admin))); TODO
     return (new_channel);
 }
@@ -429,4 +430,13 @@ int IRC_Server::start(void)
         }
     }
     return 0;
+}
+
+void IRC_Server::print_channels()
+{
+    std::map<std::string, Channel *>::iterator it = this->_channels.begin();
+    for( ; it != this->_channels.end(); ++it)
+    {
+        std::cout << "!!!: " << it->first << std::endl;
+    }
 }

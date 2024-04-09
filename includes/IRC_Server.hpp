@@ -52,6 +52,11 @@ class IRC_Server
         Channel * getChannel(const std::string& name);
 
         void checkForCloseCannel(void);
+
+
+
+        void print_channels();
+
     private:
         unsigned short _port;
         std::string _password;

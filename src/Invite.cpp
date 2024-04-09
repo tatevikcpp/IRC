@@ -6,6 +6,7 @@ Invite::~Invite() {}
 
 void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getChannel(channelName) == NULL ?
 {
+    // std::cout << "INVITE execute" << std::endl;
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
@@ -30,6 +31,7 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
         return ;
     }
 
+
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
     {
@@ -43,13 +45,13 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
         return ;
     }
 
-    if (!channel->isOperator(client))
+    if (!channel->isOperator(client) && !channel->isAdmin(client))
     {
         client.reply(ERR_CHANOPRIVSNEEDED(client.getNICK(), channelName + static_cast<char>(1)));
         return ;
     }
 
-    if (channel->isInChannel(client))
+    if (channel->isInChannel(*client_inv))
     {
         client.reply(ERR_USERONCHANNEL(client.getNICK(), nickName, channelName + static_cast<char>(1)));
         return ;
@@ -61,7 +63,6 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
         return ;
     }
 
-    client_inv->sendMsg(RPL_INVITE(client.getPrefix(), nickName, channelName));
-    client.reply(RPL_INVITING(client.getNICK(), nickName, channelName + static_cast<char>(1)));
-    channel->joinClient(client);
+    channel->joinClient(*client_inv);
+    channel->nameReply(*client_inv);
 }
