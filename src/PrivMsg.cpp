@@ -50,7 +50,7 @@ void    PrivMsg::execute(Client& client, std::vector<std::string> args) //TODO s
         std::string target = args[i];
         if (target[i] == '#' || target[i] == '&')
         {
-            target.erase(0, 1);
+            // target.erase(0, 1);
             Channel* channel = _srv.getChannel(target);
             if (!channel)
             {

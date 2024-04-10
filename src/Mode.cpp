@@ -106,14 +106,14 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             // bool condition = (mode == "-o") ? false : true;
             mode = (mode == "o") ? "+o" : mode;
 
-            if (args.size() < 2) // TODO erevi < 3
+            if (args.size() < 3)
             {
                 client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "MODE"));
                 return ;
             }
  
-            std::string nickname = args[1];
-            nickname.erase(0, 1);
+            std::string nickname = args[2];
+            // nickname.erase(0, 1);
             Client* ptr = channel->getClientNick(nickname);
             if (!ptr)
             {
@@ -123,15 +123,15 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
 
             if (mode == "-o")
             {
-                if (!channel->isAdmin(client) && channel->changeClientMode(client, Primary))
+                if (!channel->isAdmin(*ptr) && channel->changeClientMode(*ptr, Primary))
                 {
-                    client.sendMsg(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are no longer a channel operator"));
+                    (*ptr).sendMsg(RPL_MSG((*ptr).getPrefix(), "MODE", channelName, ":you are no longer a channel operator"));
                 }
             }
             else
             {
-                client.sendMsg(RPL_MSG(client.getPrefix(), "MODE", channelName, ":you are now a channel operator"));
-                channel->changeClientMode(client, Primary);
+                (*ptr).sendMsg(RPL_MSG((*ptr).getPrefix(), "MODE", channelName, ":you are now a channel operator"));
+                channel->changeClientMode(*ptr, Operator);
             }
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
@@ -140,7 +140,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         {
             if (mode != "-l")
             {
-                if (args.size() < 2)
+                if (args.size() < 3)
                 {
                     client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "MODE"));
                     return ;
@@ -161,6 +161,11 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
+        // else if (mode == "b")
+        // {
+        //     // do nothink to prevent KVirc error message
+        //     DEBUGGER();
+        // }
         else
         {
             client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :is unknown mode char to me"));

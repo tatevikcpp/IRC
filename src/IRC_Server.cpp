@@ -29,7 +29,7 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["PASS"] = new Pass(*this, false);
     _commands["NICK"] = new Nick(*this, false);
     _commands["USER"] = new User(*this, false);
-    // _commands["QUIT"] = new Quit(**this, false);
+    _commands["QUIT"] = new Quit(*this, false);
 
     _commands["PING"] = new Ping(*this);
     _commands["PONG"] = new Pong(*this);
@@ -41,6 +41,8 @@ IRC_Server::IRC_Server(const char *port, const char *password)
 
 	_commands["PRIVMSG"] = new PrivMsg(*this);
     _commands["TOPIC"] = new Topic(*this);
+    _commands["CAP"] = new Cap(*this);
+    _commands["NOTICE"] = new Notice(*this);
     // this->_command = new Command(this);
 
 }
@@ -164,14 +166,21 @@ void *get_in_addr(struct sockaddr *sa)
 
 void IRC_Server::checkForCloseCannel(void)
 {
+    std::vector<std::string> closedFds; 
     std::map<std::string, Channel *>::iterator it = _channels.begin();
+
     for ( ; it != _channels.end(); ++it)
     {
         if ((it->second)->emptyClients())
         {
-            _channels.erase(it->first);
-            delete it->second;
+            closedFds.push_back(it->first);
         }
+    }
+
+    for (size_t i = 0; i < closedFds.size(); ++i)
+    {
+        delete _channels[closedFds[i]];
+        _channels.erase(closedFds[i]);
     }
 }
 
@@ -327,6 +336,11 @@ int IRC_Server::start(void)
                         // got error or connection closed by client
                         if (nbytes == 0)
                         {
+                            std::map<int, Client *>::iterator clientIt = _clients.find(it->first);
+                            if (clientIt != _clients.end())
+                            {
+                                this->_commands["QUIT"]->execute(*clientIt->second, clientIt->second->getArguments());
+                            }
                             // connection closed
                             printf("selectserver: socket %d hung up\n", it->first);
                         } 
@@ -379,59 +393,11 @@ int IRC_Server::start(void)
 
                         }
                         std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
-                        while (itChannel != _channels.end()) {
+                        while (itChannel != _channels.end()) 
+                        {
                             itChannel->second->print();
                             itChannel++;
                         }
-
-
-                // if (it->second->_tmpBuffer.find('\n') != std::string::npos)
-                // {
-                //     it->second->setInputBuffer(it->second->_tmpBuffer);
-                //     it->second->splitBufferToList();
-                //     it->second->setArguments();
-                //     while (!it->second->getArguments().empty() || !it->second->getCommand().empty())
-                //     {
-                //         _command->commandHandler(it->second);
-                //         it->second->setArguments();
-                //     }
-                //     it->second->_tmpBuffer = "";
-                // }
-
-
-
-
-
-                        // we got some data from a client
-                        //TODO parsing anel clienti uxarkac@
-                        // TODO 
-                    //     for(j = 0; j <= _fdmax; j++)
-                    //     {
-                    //         // if (ete inch vor Channei-i mej a)
-                    //         // {
-                    //             {
-                    //                 // send to everyone!
-                    //                 if (FD_ISSET(j, &master))
-                    //                 {
-                    //                     // auto it = this->_clients.find(j);
-                    //                     // if (it != _clients.end())
-                    //                     // {
-                    //                     //     std::string channelName = "name"; 
-                    //                     //     it->second
-                    //                     // }
-                    //                     // except the listener and ourselves
-                    //                     if (j != this->_listener && j != i)
-                    //                     {
-                    //                         if (send(j, buf, nbytes, 0) == -1) 
-                    //                         {
-                    //                             std::cout << "stex send" << std::endl;
-                    //                             perror("send");
-                    //                         }
-                    //                         // std::cout<< "lalala\n";
-                    //                     }
-                    //                 }
-                    //             } 
-                    //         // }
                     }
                 }
                     // _select_fd--;

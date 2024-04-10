@@ -50,17 +50,17 @@ bool Client::isRegistered(void)
 // }
 
 
-bool Client::isAdmin(const Channel &channel) const 
-{
-    std::map<std::string, std::pair<Channel*, TypeClient> >::const_iterator it = this->_channels.find(channel.getName());
-    if (it != this->_channels.cend())
-    {
-        // if (it->second.find(channel) != it->second.end)
-        // return it->second.find(channel)
-        return it->second.second == Admin;
-    }
-    return false;
-}
+// bool Client::isAdmin(const Channel &channel) const 
+// {
+//     std::map<std::string, std::pair<Channel*, TypeClient> >::const_iterator it = this->_channels.find(channel.getName());
+//     if (it != this->_channels.cend())
+//     {
+//         // if (it->second.find(channel) != it->second.end)
+//         // return it->second.find(channel)
+//         return it->second.second == Admin;
+//     }
+//     return false;
+// }
 
 bool Client::checkForRegistered(void)
 {
@@ -119,7 +119,7 @@ void Client::leaveChannel(const std::string &name)
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
     if (it != this->_channels.end())
     {
-        it->second.first->deleteClient(*this);
+        // it->second.first->deleteClient(*this);
         this->_channels.erase(it);  //TODO - ha vor ?
     }
 }
@@ -130,6 +130,7 @@ void Client::leavALLChannels(/* const std::string &name */) //TODO kisat
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.begin();
     for (; it != this->_channels.end(); ++it)
     {
+        // this->leaveChannel(it->second.first->getName());
         it->second.first->deleteClient(*this);
     }
     this->_channels.clear();
@@ -413,8 +414,7 @@ void            Client::reply(const std::string& reply)
 
 // LA ~ LA ~ LA ~ LA ~ LA ~ LA 
 
-
-void Client::reply(const std::string& reply) // TODO kisat!
+void Client::reply(const std::string& reply) // TODO kisat! remove send fucntion
 {
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
 
@@ -423,7 +423,7 @@ void Client::reply(const std::string& reply) // TODO kisat!
 }
 
 
-void Client::sendMsg(const std::string& msg) // TODO kisat!
+void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
 {
     std::string buff = msg + "\r\n";
 

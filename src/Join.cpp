@@ -95,7 +95,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
                 continue;
             }
 
-            name.erase(0, 1);
+            // name.erase(0, 1);
             Channel* channel = _srv.getChannel(name);
             if (!channel)
             {

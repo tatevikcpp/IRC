@@ -28,5 +28,5 @@ void    Part::execute(Client& client, std::vector<std::string> args) //TODO
         return;
     }
 
-    client.leaveChannel(name); // TODO im function-y nayel 
+    // client.leaveChannel(name); // TODO im function-y nayel 
 }

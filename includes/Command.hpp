@@ -163,3 +163,23 @@ class Topic : public Command
 
         void    execute(Client& client, std::vector<std::string> args);
 };
+
+class Cap : public Command
+{
+    public:
+
+        Cap(IRC_Server& srv);
+        ~Cap();
+
+        void    execute(Client& client, std::vector<std::string> args);
+};
+
+class Notice : public Command
+{
+    public:
+
+        Notice(IRC_Server& srv);
+        ~Notice();
+
+        void    execute(Client& client, std::vector<std::string> args);
+};

@@ -36,10 +36,10 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
     
     std::string channelName = channelNames[0];
 
-    if (channelName.front() == '#')
-    {
-        channelName.erase(0, 1);
-    }
+    // if (channelName.front() == '#')
+    // {
+    //     channelName.erase(0, 1);
+    // }
 
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
@@ -82,6 +82,7 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
             comment = "No reason specified.";
 
         channel->deleteClient(*clientKick);
+        clientKick->leaveChannel(channel->getName());
         if (channel->isEmpty()) {
             
         }

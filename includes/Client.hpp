@@ -68,7 +68,7 @@ class Client
         
         int getFd(void);
 
-        bool isAdmin(const Channel &channel) const;
+        // bool isAdmin(const Channel &channel) const;
 
         void leavALLChannels(void);
         

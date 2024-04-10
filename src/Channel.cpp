@@ -87,7 +87,7 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
         // std::string prefix = (_clients[i] == _admin) ? "@" : "+";
         // nickList += prefix + _clients[i]->getNICK() + "  ";
 
-        std::string prefix = client.isAdmin(*this) == true ? "@" : "+";
+        std::string prefix = this->isAdmin(client) == true ? "@" : "+";
         std::cout << "prefix " << prefix << std::endl;
         nickList += prefix + client.getNICK() + "  ";
     }
@@ -144,7 +144,7 @@ void Channel::deleteClient(Client &client)
             this->_primary.pop_front();
         }
     }
-    client.leaveChannel(this->getName());
+    // client.leaveChannel(this->getName());
 }
 
 bool Channel::changeClientMode(Client& client, /* TypeClient */ int type)

@@ -15,5 +15,5 @@ void    Pong::execute(Client& client, std::vector<std::string> args)
     }
 
     // client.write(RPL_PING(client.getPrefix(), args.at(0)));
-    client.reply(RPL_PING(client.getPrefix(), args.at(0))); // TODO veranayel 
+    client.sendMsg(RPL_PING(client.getPrefix(), args[0])); // TODO veranayel 
 }
