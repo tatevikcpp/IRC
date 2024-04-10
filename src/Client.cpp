@@ -117,9 +117,10 @@ Channel* Client::createChannel(const std::string& name, const std::string& pass)
 void Client::leaveChannel(const std::string &name)
 {
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(name);
+
     if (it != this->_channels.end())
     {
-        // it->second.first->deleteClient(*this);
+        it->second.first->deleteClient(*this);
         this->_channels.erase(it);  //TODO - ha vor ?
     }
 }
@@ -128,6 +129,7 @@ void Client::leaveChannel(const std::string &name)
 void Client::leavALLChannels(/* const std::string &name */) //TODO kisat
 {
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.begin();
+
     for (; it != this->_channels.end(); ++it)
     {
         // this->leaveChannel(it->second.first->getName());
