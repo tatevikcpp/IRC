@@ -419,19 +419,33 @@ void            Client::reply(const std::string& reply)
 void Client::reply(const std::string& reply) // TODO kisat! remove send fucntion
 {
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
-
-    if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
-        std::cerr << "Error: can't send message to client." << std::endl;
+    _msgToSend = buff;
+    // if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
+    //     std::cerr << "Error: can't send message to client." << std::endl;
 }
 
 
 void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
 {
     std::string buff = msg + "\r\n";
+    _msgToSend = buff;
 
-    if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
-        std::cerr << "Error: can't send message to client." << std::endl;
+    // if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
+    //     std::cerr << "Error: can't send message to client." << std::endl;
 }
+
+
+void Client::sending()
+{
+    if (_msgToSend.empty() == false)
+    {
+        std::cout << "_msgToSend = " << _msgToSend << std::endl;
+        size_t bytes = send(_fd, _msgToSend.c_str(), _msgToSend.length(), 0);
+        if (bytes < 0)
+            std::cerr << "Error: can't send message to client." << std::endl;
+        _msgToSend.erase(0, bytes);    
+    }
+};
 
 std::string Client::getNICK(void) const
 {

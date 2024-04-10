@@ -58,6 +58,7 @@ class Client
         std::string getPrefix(void) const;
         void reply(const std::string& reply);
         void sendMsg(const std::string& msg);
+        void sending();
         
         std::string getCommand(void);
         // std::string get_nickname() const;
@@ -106,6 +107,8 @@ class Client
         std::string _hostname;
         std::string _realname;
         std::string _msg;
+
+        std::string _msgToSend;
 
 
         std::string _command;

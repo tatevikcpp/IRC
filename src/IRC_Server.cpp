@@ -191,8 +191,10 @@ void IRC_Server::checkForCloseCannel(void)
 
 int IRC_Server::start(void)
 {
-    fd_set master;    // master file descriptor list
+    fd_set read;    // read file descriptor list
+    fd_set write;    // read file descriptor list
     fd_set read_fds;  // temp file descriptor list for select()
+    fd_set write_fds;  // temp file descriptor list for select()
     // int _fdmax;        // maximum file descriptor number
 
     // int listener;     // listening socket descriptor
@@ -212,8 +214,10 @@ int IRC_Server::start(void)
 
     struct addrinfo hints, *ai, *p;
 
-    FD_ZERO(&master);    // clear the master and temp sets
+    FD_ZERO(&read);    // clear the read and temp sets
+    FD_ZERO(&write);    // clear the read and temp sets
     FD_ZERO(&read_fds);
+    FD_ZERO(&write_fds);
 
     // get us a socket and bind it
     memset(&hints, 0, sizeof hints);
@@ -263,8 +267,8 @@ int IRC_Server::start(void)
         exit(3);
     }
 
-    // add the listener to the master set 
-    FD_SET(this->_listener, &master);
+    // add the listener to the read set 
+    FD_SET(this->_listener, &read);
 
     // keep track of the biggest file descriptor
     this->_fdmax = this->_listener + 1; // so far, it's this one
@@ -272,9 +276,11 @@ int IRC_Server::start(void)
     // main loop
     for(;;) 
     {
-        read_fds = master; // copy it
+        read_fds = read; // copy it
+        write_fds = write; // copy it
         // _max_fd = _clients.rbegin()->first + 1;
-        _select_fd = select(_fdmax, &read_fds, NULL, NULL, NULL); //TODO ogtagorcel write_fds -y
+        _select_fd = select(_fdmax, &read_fds, &write_fds, NULL, NULL); //TODO ogtagorcel write_fds -y
+        std::cout << "_select_fd = " << _select_fd << std::endl;
         if (_select_fd == -1)
         {
             std::cout << "stex select" << std::endl;
@@ -285,7 +291,7 @@ int IRC_Server::start(void)
         {
             // run through the existing connections looking for data to read
             if (FD_ISSET(this->_listener, &read_fds)) 
-            { 
+            {
                 // we got one!!
                     // TODO erb avelanum em nor clientner, miacnum enq serverin
                     // handle new connections
@@ -308,8 +314,8 @@ int IRC_Server::start(void)
                         std::cout << "Error: setting client fd to non-blocking mode failed!" << std::endl;
                     }
 
-                    FD_SET(_newfd, &master);
-                        // add to master set
+                    FD_SET(_newfd, &read);
+                        // add to read set
                     if (_newfd >= _fdmax) 
                     {    // keep track of the max
                         _fdmax = _newfd + 1;
@@ -343,6 +349,7 @@ int IRC_Server::start(void)
                             }
                             // connection closed
                             printf("selectserver: socket %d hung up\n", it->first);
+                            // close(it->first);
                         } 
                         else
                         {
@@ -350,7 +357,8 @@ int IRC_Server::start(void)
                         }
 
                         close(it->first); // bye!
-                        FD_CLR(it->first, &master); // remove from master set
+                        FD_CLR(it->first, &read); // remove from read set
+                        FD_CLR(it->first, &write);
                     } 
                     else
                     {
@@ -392,6 +400,7 @@ int IRC_Server::start(void)
                             // }
 
                         }
+                        FD_SET(it->first, &write);
                         std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
                         while (itChannel != _channels.end()) 
                         {
@@ -399,6 +408,11 @@ int IRC_Server::start(void)
                             itChannel++;
                         }
                     }
+                }
+                else if (FD_ISSET(it->first, &write_fds))
+                {
+                    it->second->sending();
+                    FD_CLR(it->first, &write);
                 }
                     // _select_fd--;
                 // TODO  if (FD_ISSET(it->first, &write_fds)) _select_fd--

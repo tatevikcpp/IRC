@@ -18,7 +18,7 @@ class Channel
         void deleteClient(Client &client);
         void joinClient(Client &client);
         bool isInChannel(Client& client);
-        void sending(Client* C, const std::string& msg/* , const std::string& cmd */);
+        // void sending(Client* C, const std::string& msg/* , const std::string& cmd */);
         // void addOperator(Client *clinet);
         bool channelIsFull(void);
         bool emptyChannel(void);
