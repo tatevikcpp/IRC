@@ -72,13 +72,13 @@ void Channel::sendMsg(Client &client, const std::string &msg, const std::string&
 
 void Channel::nameReply(Client &client) //TODO "@" -i hamar
 {
-    std::cout << "Channel::nameReply" << std::endl;
-    // sending TOPIC to new user    
-    // std::string topic = this->getTopic();
-    // if (topic.empty())            
-    //     client.sending(RPL_NOTOPIC(_channelName + static_cast<char>(1)));
-    // else            
-    //     client.sending(RPL_TOPIC(_channelName + static_cast<char>(1), topic));
+    // std::cout << "Channel::nameReply" << std::endl;
+    // // sending TOPIC to new user    
+    std::string topic = this->getTopic();
+    if (topic.empty())            
+        client.sendMsg(RPL_NOTOPIC(_name + static_cast<char>(1)));
+    else            
+        client.sendMsg(RPL_TOPIC(_name + static_cast<char>(1), topic));
     // sending channal's users list to new user
     std::string nickList;
     std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
@@ -95,8 +95,17 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
     client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
 }
 
+std::string Channel::getTopic(void) const
+{
+    return _topic;
+}
 
-void Channel::joinClient(Client &client)
+void Channel::setTopic(const std::string& topic)
+{
+    _topic = topic;
+}
+
+void Channel::joinClient(Client &client) //_clients[i]->sending(RPL_JOIN(C->getPrefix(), _channelName));
 {
     if (this->_clients.find(client._fd) != this->_clients.end())
     {
@@ -108,8 +117,20 @@ void Channel::joinClient(Client &client)
     }
     this->_clients[client._fd] = &client;
     this->_primary.push_back(&client);
+    // sendInChannel(RPL_JOIN(client.getPrefix(), channel->getName()));
+    // std::map<int, Client *>::iterator it = this->_clients.begin();
+    // for(; it != this->_clients.end(); ++it)
+    //     it->second->sendMsg(RPL_JOIN(client.getPrefix(), _name));
     client.joinToChannel(*this);
 }
+
+void Channel::sendInChannel(std::string const &msg) const
+{
+     std::map<int, Client *>::const_iterator it = this->_clients.cbegin();
+
+    for(; it != this->_clients.end(); ++it)
+        it->second->sending(msg);
+};
 
 void Channel::deleteClient(Client &client)
 {

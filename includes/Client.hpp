@@ -59,6 +59,7 @@ class Client
         void reply(const std::string& reply);
         void sendMsg(const std::string& msg);
         void sending();
+        void sending(std::string const & msg);
         
         std::string getCommand(void);
         // std::string get_nickname() const;

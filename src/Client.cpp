@@ -419,7 +419,8 @@ void            Client::reply(const std::string& reply)
 void Client::reply(const std::string& reply) // TODO kisat! remove send fucntion
 {
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
-    _msgToSend = buff;
+    _msgToSend.append(buff);
+    
     // if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
     //     std::cerr << "Error: can't send message to client." << std::endl;
 }
@@ -428,7 +429,7 @@ void Client::reply(const std::string& reply) // TODO kisat! remove send fucntion
 void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
 {
     std::string buff = msg + "\r\n";
-    _msgToSend = buff;
+    _msgToSend.append(buff);
 
     // if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
     //     std::cerr << "Error: can't send message to client." << std::endl;
@@ -446,6 +447,12 @@ void Client::sending()
         _msgToSend.erase(0, bytes);    
     }
 };
+
+// void Client::sending(std::string const & msg)
+// {
+//     if (send(_fd, msg.c_str(), msg.length(), 0) < 0)
+//         std::cerr << "Error: can't send message to client." << std::endl;
+// };
 
 std::string Client::getNICK(void) const
 {

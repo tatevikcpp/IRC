@@ -141,7 +141,8 @@ void    Join::execute(Client& client, std::vector<std::string> args)
                 continue;
             }
             channel->joinClient(client);
-
+            channel->sendInChannel(RPL_JOIN(client.getPrefix(), channel->getName()));
+            
             channel->nameReply(client);
 
         // }
