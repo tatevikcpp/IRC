@@ -141,10 +141,6 @@ void    Join::execute(Client& client, std::vector<std::string> args)
                 continue;
             }
             channel->joinClient(client);
-
-            // channel->nameReply(client);
-
-        // }
     }
             _srv.print_channels();
 }

@@ -83,11 +83,9 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
     std::map<int, Client *>::iterator it = this->_clients.begin();
     for(; it != this->_clients.end(); ++it)
     {
-        // if (this->_clients.find(client.getFd()) !=  _clients.end()) 
-        // {
-            std::string prefix = this->isAdmin(client) == true ? "@" : "+";
-            nickList += prefix + client.getNICK() + "  ";
-        // }
+        std::string prefix = this->isAdmin(*it->second) == true ? "@" : "+";
+
+        nickList += prefix + it->second->getNICK() + "  ";
     }
 
     std::cout << "nicklist : " << nickList << std::endl;
