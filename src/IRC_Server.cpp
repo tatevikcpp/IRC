@@ -122,7 +122,7 @@ void IRC_Server::addChannel(Channel &channel)
 
     if (this->_channels.insert(std::make_pair(channel._name, &channel)).second == false)
     {
-        std::cout << "alredy exist\n";
+        std::cout << "alredy exist\n"; //kisat
     }
 }
 

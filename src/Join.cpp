@@ -142,7 +142,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
             }
             channel->joinClient(client);
 
-            channel->nameReply(client);
+            // channel->nameReply(client);
 
         // }
     }

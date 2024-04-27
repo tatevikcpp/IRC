@@ -72,25 +72,26 @@ void Channel::sendMsg(Client &client, const std::string &msg, const std::string&
 
 void Channel::nameReply(Client &client) //TODO "@" -i hamar
 {
-    std::cout << "Channel::nameReply" << std::endl;
     // sending TOPIC to new user    
-    // std::string topic = this->getTopic();
-    // if (topic.empty())            
-    //     client.sending(RPL_NOTOPIC(_channelName + static_cast<char>(1)));
-    // else            
-    //     client.sending(RPL_TOPIC(_channelName + static_cast<char>(1), topic));
+    if (_topic.empty())            
+        client.sendMsg(RPL_NOTOPIC(_name + static_cast<char>(1)));
+    else            
+        client.sendMsg(RPL_TOPIC(_name + static_cast<char>(1), _topic));
+
     // sending channal's users list to new user
     std::string nickList;
-    std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
-    if (it != _clients.end())
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+    for(; it != this->_clients.end(); ++it)
     {
-        // std::string prefix = (_clients[i] == _admin) ? "@" : "+";
-        // nickList += prefix + _clients[i]->getNICK() + "  ";
-
-        std::string prefix = this->isAdmin(client) == true ? "@" : "+";
-        std::cout << "prefix " << prefix << std::endl;
-        nickList += prefix + client.getNICK() + "  ";
+        // if (this->_clients.find(client.getFd()) !=  _clients.end()) 
+        // {
+            std::string prefix = this->isAdmin(client) == true ? "@" : "+";
+            nickList += prefix + client.getNICK() + "  ";
+        // }
     }
+
+    std::cout << "nicklist : " << nickList << std::endl;
+
     client.sendMsg(RPL_NAMREPLY(client.getNICK(), _name + static_cast<char>(1), nickList));
     client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
 }
@@ -109,6 +110,13 @@ void Channel::joinClient(Client &client)
     this->_clients[client._fd] = &client;
     this->_primary.push_back(&client);
     client.joinToChannel(*this);
+
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+    for(; it != this->_clients.end(); ++it)
+    {
+        it->second->sendMsg(RPL_JOIN(client.getPrefix(), _name));
+    }
+    this->nameReply(client);
 }
 
 void Channel::deleteClient(Client &client)

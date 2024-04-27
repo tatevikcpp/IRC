@@ -70,6 +70,8 @@ class Channel
         size_t _limit;
         bool _inviteOnly;
         bool _topicMode;
+        
+
     public:
         std::string _name;
         std::string _pass;
