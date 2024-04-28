@@ -276,6 +276,10 @@ void Client::setArguments(void)
             _msg = _vecBuffer[0].substr(pos + 1);
             _vecBuffer[0].erase(pos);
         }
+        else
+        {
+            _msg = "";
+        }
         
         std::vector<std::string> splitedVec = split(_vecBuffer[0], ' ');
         for (size_t i = 0; i < splitedVec.size(); ++i)
@@ -468,7 +472,7 @@ Channel * Client::getChannel(const std::string& name)
 void Client::joinToChannel(Channel &channel) //TODO  hery chanicel :D
 {
     // channel.joinClient(*this);
-    std::cout << "joinToChannel\n";
+    // std::cout << "joinToChannel\n";
 
     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it = this->_channels.find(channel.getName());
 

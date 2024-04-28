@@ -72,7 +72,9 @@ void Channel::sendMsg(Client &client, const std::string &msg, const std::string&
 
 void Channel::nameReply(Client &client) //TODO "@" -i hamar
 {
-    // sending TOPIC to new user    
+    std::cout << "sending TOPIC to new user" << std::endl;
+    std::cout << "LALALALALA" << std::endl;
+    
     if (_topic.empty())            
         client.sendMsg(RPL_NOTOPIC(_name + static_cast<char>(1)));
     else            
@@ -88,8 +90,6 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
         nickList += prefix + it->second->getNICK() + "  ";
     }
 
-    std::cout << "nicklist : " << nickList << std::endl;
-
     client.sendMsg(RPL_NAMREPLY(client.getNICK(), _name + static_cast<char>(1), nickList));
     client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
 }
@@ -97,6 +97,7 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
 
 void Channel::joinClient(Client &client)
 {
+    std::cout << "joinClient\n";
     if (this->_clients.find(client._fd) != this->_clients.end())
     {
         return ;

@@ -377,7 +377,7 @@ int IRC_Server::start(void)
                             }
                             std::cout << "it->second->getCommand() = " << it->second->getCommand() << std::endl;
                             if (_commands.find(it->second->getCommand()) == _commands.end()) {
-                                std::cout << "ERR_UNKNOWNCOMMAND\n";
+                                // std::cout << "ERR_UNKNOWNCOMMAND\n";
                                 it->second->reply(ERR_UNKNOWNCOMMAND(it->second->getNICK(), it->second->getCommand()));
                                 continue;
                             }

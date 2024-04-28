@@ -101,7 +101,7 @@ void    Join::execute(Client& client, std::vector<std::string> args)
             {
                 std::cout << "return2" << std::endl;
                 channel = _srv.createChannel(name, pass, client);
-                channel->nameReply(client);
+                // channel->nameReply(client);
                 // return ;
                 // break;
                 continue;
