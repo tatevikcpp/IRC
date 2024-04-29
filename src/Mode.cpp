@@ -146,10 +146,15 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
                     return ;
                 }
 
-                int new_limit = std::atoi(args[1].c_str());
+                int new_limit = std::atoi(args[2].c_str());
                 if (new_limit < 1)
                 {
                     client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :limit must be greater than 0"));
+                    return;
+                }
+                if ((size_t)new_limit < channel->get_size())
+                {
+                    client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :number of clients is already greater than limit"));
                     return;
                 }
                 channel->setChannelLimit(new_limit);

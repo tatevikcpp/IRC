@@ -260,7 +260,6 @@ const std::string& Client::getMSG(void)
 
 void Client::setArguments(void)
 {
-    std::cout << "_vecBuffer : " << _vecBuffer[0] << std::endl;
     _arguments.clear();
     _command.clear();
 
@@ -275,10 +274,12 @@ void Client::setArguments(void)
         {
             _msg = _vecBuffer[0].substr(pos + 1);
             _vecBuffer[0].erase(pos);
+            _isColon = true;
         }
         else
         {
             _msg = "";
+            _isColon = false;
         }
         
         std::vector<std::string> splitedVec = split(_vecBuffer[0], ' ');
@@ -291,7 +292,7 @@ void Client::setArguments(void)
                 _arguments.push_back(tmp[i]);
             }
             if (i + 1 < splitedVec.size() && splitedVec[i].back() != ',' && splitedVec[i + 1].front() != ',' 
-                && (_command == "JOIN" || _command == "PRIVMSG" || _command == "KICK"))
+                && (_command == "JOIN" || _command == "PRIVMSG" || _command == "KICK" || _command == "TOPIC"))
             {
                 _arguments.push_back("");
             }

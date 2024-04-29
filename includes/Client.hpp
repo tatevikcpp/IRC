@@ -91,7 +91,8 @@ class Client
             else
                 std::cout << "vector is empty" << std::endl;
         }
-
+        
+        bool _isColon;
     private:
 
         // std::string _port;
@@ -106,6 +107,7 @@ class Client
         std::string _hostname;
         std::string _realname;
         std::string _msg;
+
 
 
         std::string _command;
