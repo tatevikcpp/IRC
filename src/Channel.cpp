@@ -94,8 +94,18 @@ void Channel::nameReply(Client &client) //TODO "@" -i hamar
     client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
 }
 
+std::string Channel::getTopic(void) const
+{
+    return _topic;
+}
 
-void Channel::joinClient(Client &client)
+void Channel::setTopic(const std::string& topic)
+{
+    _topic = topic;
+}
+
+
+void Channel::joinClient(Client &client)//_clients[i]->sending(RPL_JOIN(C->getPrefix(), _channelName));
 {
     std::cout << "joinClient\n";
     if (this->_clients.find(client._fd) != this->_clients.end())
@@ -117,6 +127,15 @@ void Channel::joinClient(Client &client)
     }
     this->nameReply(client);
 }
+
+// void Channel::sendInChannel(std::string const &msg) const
+// {
+//     (void)msg;
+//      std::map<int, Client *>::const_iterator it = this->_clients.cbegin();
+
+//     for(; it != this->_clients.end(); ++it)
+//         it->second->sending();
+// };
 
 void Channel::deleteClient(Client &client)
 {

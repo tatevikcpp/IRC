@@ -438,6 +438,12 @@ void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
         std::cerr << "Error: can't send message to client." << std::endl;
 }
 
+void Client::appendResponse(const std::string &str)
+{
+    _msg.append(str);
+};
+
+
 std::string Client::getNICK(void) const
 {
     return (this->_nick);

@@ -44,7 +44,6 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["CAP"] = new Cap(*this);
     _commands["NOTICE"] = new Notice(*this);
     // this->_command = new Command(this);
-
 }
 
 IRC_Server::~IRC_Server(/* *this */)
@@ -183,11 +182,6 @@ void IRC_Server::checkForCloseCannel(void)
         _channels.erase(closedFds[i]);
     }
 }
-
-
-
-
-
 
 int IRC_Server::start(void)
 {
@@ -367,6 +361,7 @@ int IRC_Server::start(void)
                         if (it->second->_buffer.find('\n') != std::string::npos)
                         {
                             // it->second->setInputBuffer(it->second->_buffer);//TODO kaskaceli => veranayel
+                            
                             it->second->splitbuffer();
                             it->second->setArguments();
                             std::cout << it->second->getCommand() << std::endl;

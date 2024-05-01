@@ -44,6 +44,7 @@ class Channel
         // std::vector<std::string> get_nicknames(void);
         void nameReply(Client &client);
         // void removeClient(Client &client);
+        // void sendInChannel(std::string const &msg) const;
 
         bool emptyClients(void);
 
@@ -60,6 +61,10 @@ class Channel
 
         bool isAdmin(const Client& client) const;
         void sendMsg(Client &client, const std::string &msg, const std::string& cmd);
+
+        std::string getTopic(void) const;
+
+        void setTopic(const std::string& topic);
 
     private:
         std::map<int, Client *> _clients;
