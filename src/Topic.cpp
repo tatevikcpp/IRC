@@ -47,8 +47,6 @@ void    Topic::execute(Client& client, std::vector<std::string> args) //TODO pit
 
     if (args.size() == 1)
     {
-
-        // std::string topic = channel->_topic;
         if (client._isColon)
         {
             channel->_topic = client.getMSG();

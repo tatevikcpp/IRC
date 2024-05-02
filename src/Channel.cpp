@@ -292,7 +292,7 @@ void Channel::setTopicMode(bool mode)
 bool Channel::isTopicModeOn() const
 {
     return (this->_topicMode);
-};
+}
 
 void Channel::set_pass(const std::string& pass)
 {
