@@ -113,6 +113,8 @@ class Client
         std::string _msg;
 
 
+        std::string _lalala;
+
 
         std::string _command;
         std::vector<std::string> _arguments;

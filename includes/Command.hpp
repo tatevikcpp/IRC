@@ -183,3 +183,14 @@ class Notice : public Command
 
         void    execute(Client& client, std::vector<std::string> args);
 };
+
+
+class Who : public Command
+{
+    public:
+
+        Who(IRC_Server& srv);
+        ~Who();
+
+        void    execute(Client& client, std::vector<std::string> args);
+};

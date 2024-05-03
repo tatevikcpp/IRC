@@ -4,7 +4,7 @@
 
 bool validArgv(std::string port, std::string password)
 {
-    if (password.empty() || password.length() < 8)
+    if (password.empty() ) //|| password.length() < 1
     {
         std::cout << "Error: password must contain at least 8 symbols!" << std::endl;
         return false;

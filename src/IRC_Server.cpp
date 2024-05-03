@@ -43,6 +43,7 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["TOPIC"] = new Topic(*this);
     _commands["CAP"] = new Cap(*this);
     _commands["NOTICE"] = new Notice(*this);
+    _commands["WHO"] = new Who(*this);
     // this->_command = new Command(this);
 }
 
@@ -349,7 +350,7 @@ int IRC_Server::start(void)
                     else
                     {
                         std::cout << "sending message" << std::endl;
-                        it->second->_buffer.assign(buf, nbytes); // TODO review
+                        it->second->_buffer.append(buf, nbytes); // TODO review
                         // int i = 0;
                         // while(buf[i])
                         // {
@@ -385,6 +386,7 @@ int IRC_Server::start(void)
                             //     // exit(1);
                             //     // std::cout << "return " << std::endl;
                             // }
+                            it->second->_buffer.clear();
 
                         }
                         std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
@@ -395,7 +397,9 @@ int IRC_Server::start(void)
                         }
                     }
                 }
-                    // _select_fd--;
+                //  else if (FD_ISSET(it->first, &write_fds))
+                // {
+                // }
                 // TODO  if (FD_ISSET(it->first, &write_fds)) _select_fd--
             }
         }

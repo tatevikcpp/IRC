@@ -10,7 +10,6 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
-
         return ;
     }
 
@@ -64,5 +63,5 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
     }
 
     channel->joinClient(*client_inv);
-    channel->nameReply(*client_inv);
+    // channel->nameReply(*client_inv);
 }

@@ -440,7 +440,7 @@ void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
 
 void Client::appendResponse(const std::string &str)
 {
-    _msg.append(str);
+    _lalala.append(str);
 };
 
 
