@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include <fcntl.h>
 #include "Command.hpp"
+#include "EventManager.hpp"
 
 // #include <netinet/in.h>
 // struct in_addr
@@ -186,8 +187,9 @@ void IRC_Server::checkForCloseCannel(void)
 
 int IRC_Server::start(void)
 {
-    fd_set master;    // master file descriptor list
+    // fd_set master;    // master file descriptor list
     fd_set read_fds;  // temp file descriptor list for select()
+    fd_set write_fds;  // temp file descriptor list for select()
     // int _fdmax;        // maximum file descriptor number
 
     // int listener;     // listening socket descriptor
@@ -207,7 +209,7 @@ int IRC_Server::start(void)
 
     struct addrinfo hints, *ai, *p;
 
-    FD_ZERO(&master);    // clear the master and temp sets
+    // FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
 
     // get us a socket and bind it
@@ -259,7 +261,9 @@ int IRC_Server::start(void)
     }
 
     // add the listener to the master set 
-    FD_SET(this->_listener, &master);
+    EventManager::start();
+    EventManager::addReadFd(this->_listener);
+    // FD_SET(this->_listener, &master);
 
     // keep track of the biggest file descriptor
     this->_fdmax = this->_listener + 1; // so far, it's this one
@@ -267,9 +271,10 @@ int IRC_Server::start(void)
     // main loop
     for(;;) 
     {
-        read_fds = master; // copy it
+        read_fds = *EventManager::getReadFdSet(); // copy it
+        write_fds = *EventManager::getReadFdSet(); // copy it
         // _max_fd = _clients.rbegin()->first + 1;
-        _select_fd = select(_fdmax, &read_fds, NULL, NULL, NULL); //TODO ogtagorcel write_fds -y
+        _select_fd = select(_fdmax, &read_fds, &write_fds, NULL, NULL); //TODO ogtagorcel write_fds -y
         if (_select_fd == -1)
         {
             std::cout << "stex select" << std::endl;
@@ -303,7 +308,8 @@ int IRC_Server::start(void)
                         std::cout << "Error: setting client fd to non-blocking mode failed!" << std::endl;
                     }
 
-                    FD_SET(_newfd, &master);
+                    // FD_SET(_newfd, &master);
+                    EventManager::addReadFd(_newfd);
                         // add to master set
                     if (_newfd >= _fdmax) 
                     {    // keep track of the max
@@ -345,7 +351,8 @@ int IRC_Server::start(void)
                         }
 
                         close(it->first); // bye!
-                        FD_CLR(it->first, &master); // remove from master set
+                        // FD_CLR(it->first, &master); // remove from master set
+                        EventManager::delReadFd(it->first);
                     } 
                     else
                     {
@@ -399,6 +406,12 @@ int IRC_Server::start(void)
                 }
                 //  else if (FD_ISSET(it->first, &write_fds))
                 // {
+
+
+
+
+
+                    EventManager::delWriteFd(it->first);
                 // }
                 // TODO  if (FD_ISSET(it->first, &write_fds)) _select_fd--
             }

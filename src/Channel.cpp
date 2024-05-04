@@ -1,6 +1,7 @@
 #include "Channel.hpp"
 #include "Numeric_and_error_replies.hpp"
 #include <algorithm>
+#include "EventManager.hpp"
 
 void Channel::print() const {
     std::map<int, Client *>::const_iterator it = _clients.cbegin();
@@ -202,6 +203,8 @@ void Channel::sending(Client* C, const std::string& msg/* , const std::string& c
     {
         if (C->_fd != it->first)
         {
+            // EventManager::addWriteFd(it->first);
+            // it->second->appendResponse(msg);
             if (send(it->first, msg.c_str(), msg.size(), 0) < 0)
                 throw std::runtime_error("Error while sending a message to a client!");
         }
