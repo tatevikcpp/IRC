@@ -3,6 +3,7 @@
 #include <sstream>
 #include <utility>
 #include "Numeric_and_error_replies.hpp"
+#include "EventManager.hpp"
 
 
 // void *get_in_addr(struct sockaddr *sa)
@@ -73,6 +74,20 @@ bool Client::checkForRegistered(void)
         this->_registered = false;
 
     return (this->_registered);
+}
+
+
+
+std::string Client::getLalala(void) const
+{
+    return (this->_lalala);
+}
+
+void Client::sendLalala(void)
+{
+    if (send(this->_fd, this->_lalala.c_str(), this->_lalala.length(), 0) < 0)
+        std::cerr << "Error: can't send message to client." << std::endl;
+    this->_lalala.clear();
 }
 
 int Client::getFd(void)
@@ -425,8 +440,10 @@ void Client::reply(const std::string& reply) // TODO kisat! remove send fucntion
 {
     std::string buff = ":" + this->getPrefix() + " " + reply + "\r\n";
 
-    if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
-        std::cerr << "Error: can't send message to client." << std::endl;
+    EventManager::addWriteFd(this->_fd);
+    this->appendResponse(buff);
+    // if (send(_fd, buff.c_str(), buff.length(), 0) < 0)
+    //     std::cerr << "Error: can't send message to client." << std::endl;
 }
 
 
@@ -434,8 +451,11 @@ void Client::sendMsg(const std::string& msg) // TODO kisat! remove send fucntion
 {
     std::string buff = msg + "\r\n";
 
-    if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
-        std::cerr << "Error: can't send message to client." << std::endl;
+    EventManager::addWriteFd(this->_fd);
+    this->appendResponse(buff);
+
+    // if (/* _ifClosed || */ send(_fd, buff.c_str(), buff.length(), 0) < 0)
+    //     std::cerr << "Error: can't send message to client." << std::endl;
 }
 
 void Client::appendResponse(const std::string &str)

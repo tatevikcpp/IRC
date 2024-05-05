@@ -195,7 +195,7 @@ bool Channel::changeClientMode(Client& client, /* TypeClient */ int type)
     return false;
 }
 
-void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */) //TODO
+void Channel::sending(Client* C, const std::string& msg) //TODO
 {
     std::map<int, Client *>::const_iterator it = this->_clients.cbegin(); // TODO nayel !!
 
@@ -203,10 +203,10 @@ void Channel::sending(Client* C, const std::string& msg/* , const std::string& c
     {
         if (C->_fd != it->first)
         {
-            // EventManager::addWriteFd(it->first);
-            // it->second->appendResponse(msg);
-            if (send(it->first, msg.c_str(), msg.size(), 0) < 0)
-                throw std::runtime_error("Error while sending a message to a client!");
+            EventManager::addWriteFd(it->first);
+            it->second->appendResponse(msg);
+            // if (send(it->first, msg.c_str(), msg.size(), 0) < 0)
+            //     throw std::runtime_error("Error while sending a message to a client!");
         }
         it++;
     }

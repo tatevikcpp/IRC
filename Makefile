@@ -14,7 +14,7 @@ OBJS = $(patsubst src/%.cpp, ./$(TMP)/%.o, $(SRCS))
 
 RM = rm -fr
 
-HEADER = $(wildcard *.hpp)
+HEADER = $(wildcard includes/*.hpp)
 
 ./$(TMP)/%.o: src/%.cpp $(HEADER) Makefile
 	$(CXX) $(CXXFLAGS) -o $@ -c $<

@@ -46,6 +46,8 @@ class Client
         bool checkForRegistered(void);
         void splitbuffer(void);
 
+        void sendLalala(void);
+
         // std::string getRemoteAddr() const;
 
         // std::string     trim(const std::string& str);
@@ -79,6 +81,7 @@ class Client
         std::string _buffer;
 
         std::string getMSG(void) const;
+        std::string getLalala(void) const;
 
         const std::string& getMSG(void);
 

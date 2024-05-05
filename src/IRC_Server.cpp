@@ -272,9 +272,10 @@ int IRC_Server::start(void)
     for(;;) 
     {
         read_fds = *EventManager::getReadFdSet(); // copy it
-        write_fds = *EventManager::getReadFdSet(); // copy it
+        write_fds = *EventManager::getWriteFdSet(); // copy it
         // _max_fd = _clients.rbegin()->first + 1;
         _select_fd = select(_fdmax, &read_fds, &write_fds, NULL, NULL); //TODO ogtagorcel write_fds -y
+        std::cout << "select " << _select_fd << std::endl;
         if (_select_fd == -1)
         {
             std::cout << "stex select" << std::endl;
@@ -376,12 +377,14 @@ int IRC_Server::start(void)
                             it->second->print_vector();
                             if (it->second->getCommand().empty() == true)
                             {
+                                it->second->_buffer.clear();
                                 continue;
                             }
                             std::cout << "it->second->getCommand() = " << it->second->getCommand() << std::endl;
                             if (_commands.find(it->second->getCommand()) == _commands.end()) {
                                 // std::cout << "ERR_UNKNOWNCOMMAND\n";
                                 it->second->reply(ERR_UNKNOWNCOMMAND(it->second->getNICK(), it->second->getCommand()));
+                                it->second->_buffer.clear();
                                 continue;
                             }
                             this->_commands[it->second->getCommand()]->execute(*it->second, it->second->getArguments());
@@ -404,15 +407,14 @@ int IRC_Server::start(void)
                         }
                     }
                 }
-                //  else if (FD_ISSET(it->first, &write_fds))
-                // {
+                 else if (FD_ISSET(it->first, &write_fds))
+                {
+                    // if (send(it->first, it->second->getLalala().c_str(),it->second->getLalala().length(), 0) < 0)
+                    //     std::cerr << "Error: can't send message to client." << std::endl;
 
-
-
-
-
+                    it->second->sendLalala();
                     EventManager::delWriteFd(it->first);
-                // }
+                }
                 // TODO  if (FD_ISSET(it->first, &write_fds)) _select_fd--
             }
         }
