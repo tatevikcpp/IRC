@@ -10,7 +10,6 @@ Mode::~Mode() {}
 void    Mode::execute(Client& client, std::vector<std::string> args)
 {
     // hanling errors
-
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
@@ -23,9 +22,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         return ;
     }
     
-    // std::string target = args.at(0);
     std::string channelName = args[0];
-
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
     {
@@ -68,7 +65,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             client.sendMsg(RPL_MODE(client.getPrefix(), channelName, mode));
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
-         else if (mode == "k" || mode == "+k" || mode == "-k")
+        else if (mode == "k" || mode == "+k" || mode == "-k")
         {
             std::string key;
             if (args.size() > 2)
