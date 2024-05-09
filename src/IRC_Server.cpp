@@ -314,12 +314,12 @@ int IRC_Server::start(void)
                             it->second->_buffer.clear();
 
                         }
-                        std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
-                        while (itChannel != _channels.end()) 
-                        {
-                            itChannel->second->print();
-                            itChannel++;
-                        }
+                        // std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
+                        // while (itChannel != _channels.end()) 
+                        // {
+                        //     itChannel->second->print();
+                        //     itChannel++;
+                        // }
                     }
                 }
                  else if (FD_ISSET(it->first, &write_fds))
