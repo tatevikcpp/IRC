@@ -6,7 +6,7 @@ Part::~Part() {}
 
 // syntax: PART <channels> [<message>]
 
-void    Part::execute(Client& client, std::vector<std::string> args) //TODO 
+void    Part::execute(Client& client, std::vector<std::string> args)
 {
     if (!client.isRegistered())
     {
@@ -22,11 +22,9 @@ void    Part::execute(Client& client, std::vector<std::string> args) //TODO
     std::string name = args[0];
     Channel     *channel = _srv.getChannel(name);
 
-    if (!channel || !client.getChannel(name) /* || client.getChannel()->getName() != name */)
+    if (!channel || !client.getChannel(name))
     {
         client.reply(ERR_NOSUCHCHANNEL(client.getNICK(), name));
         return;
     }
-
-    // client.leaveChannel(name); // TODO im function-y nayel 
 }

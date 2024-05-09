@@ -42,10 +42,6 @@ std::string my_to_string(size_t num)
     return (str.str());
 };
 
-
-//*******************************************************************
-
-
 std::vector<std::string>  split(const std::string &str, char c)
 {
     std::stringstream test(str);
@@ -61,6 +57,3 @@ std::vector<std::string>  split(const std::string &str, char c)
     }
     return (seglist);
 }
-
-
-//**************************************************************************

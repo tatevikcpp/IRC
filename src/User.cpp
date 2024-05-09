@@ -6,12 +6,10 @@ User::~User() {}
 
 // stntax: USER <username> <hostname> <servername> <realname>
 
-void    User::execute(Client& client, std::vector<std::string> args) //USER -y 2-rd angam ell a anum
+void    User::execute(Client& client, std::vector<std::string> args)
 {
     if (client.getPASS().empty())
     {
-        std::cout << "client.getPASS() "  << client.getPASS() << std::endl;
-        std::cout << "user in execute" << std::endl;
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
         return ;
     }
@@ -27,10 +25,6 @@ void    User::execute(Client& client, std::vector<std::string> args) //USER -y 2
         return;
     }
 
-
-    // client.set_username(args[0]);
-    // client.set_realname(args[3]);
     client.setUSER(args[0], args[3]);
-    // client.welcome();
     client.checkForRegistered();
 }

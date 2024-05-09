@@ -163,11 +163,6 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
-        // else if (mode == "b")
-        // {
-        //     // do nothink to prevent KVirc error message
-        //     DEBUGGER();
-        // }
         else
         {
             client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :is unknown mode char to me"));
@@ -175,7 +170,3 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         }
     }
 }
-
-
-
-// MODE #foobar +o bunnyMO

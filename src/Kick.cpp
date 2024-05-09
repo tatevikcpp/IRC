@@ -6,7 +6,7 @@ Kick::~Kick() {}
 
 // syntax: KICK <channel> <client> :[<message>]
 
-void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti vor
+void    Kick::execute(Client& client, std::vector<std::string> args)
 {
     if (!client.isRegistered())
     {
@@ -20,11 +20,6 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
         return ;
     }
 
-    // // extract needed info
-    // std::string name = args[0];
-    // std::string target = args[1];
-    // std::string reason = "No reason specified!";
-
     std::vector<std::string>::iterator it = std::find(args.begin(), args.end(), "");
     std::vector<std::string> channelNames(args.begin(), it);
 
@@ -35,11 +30,6 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
     std::string comment = client.getMSG();
     
     std::string channelName = channelNames[0];
-
-    // if (channelName.front() == '#')
-    // {
-    //     channelName.erase(0, 1);
-    // }
 
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
@@ -91,8 +81,5 @@ void    Kick::execute(Client& client, std::vector<std::string> args) //TODO piti
         {
             _srv.delChannel(channel);
         }
-        // channel->deleteClient(client, comment, client->ifClosed());
-        // client->leavingForChannels(channel, comment);  // TODO petqa nayel
     }
-    // _srv.checkForCloseCannel();  // TODO already done aystex line 88 _srv.delChannel(channel);
 }

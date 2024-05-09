@@ -6,7 +6,7 @@ Topic::~Topic() {}
 
 // syntax: Topic <channel> :[<message>]
 
-void    Topic::execute(Client& client, std::vector<std::string> args) //TODO piti vor
+void    Topic::execute(Client& client, std::vector<std::string> args)
 {
     if (!client.isRegistered())
     {

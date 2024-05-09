@@ -4,8 +4,6 @@
 #include <map>
 #include <set>
 
-// #include <queue>
-// deleteClient, joinClient, Channel, ~Channel
 class Client;
 
 class Channel
@@ -14,42 +12,26 @@ class Channel
         Channel(const std::string& name, const std::string& pass = "", Client *client = NULL);
         ~Channel();
 
-        // void addClient(Client &client);
         void deleteClient(Client &client);
         void joinClient(Client &client);
         bool isInChannel(Client& client);
-        void sending(Client* C, const std::string& msg/* , const std::string& cmd */);
-        // void addOperator(Client *clinet);
+        void sending(Client* C, const std::string& msg);
         bool channelIsFull(void);
         bool emptyChannel(void);
-        // bool isInviteOnly(void);
-
         size_t get_limit() const;
         size_t get_size()const;
         std::string get_pass() const;
         void set_pass(const std::string& pass);
-
-        // std::string getName(void) const;
         std::string getName(void) const;
-
         void broadcast(const std::string& message);
         void broadcast(const std::string& message, Client* exclude);
-
         void print() const;
-
         void setChannelLimit(int limit);
         int getChannelLimit(void);
-        bool changeClientMode(Client& client, /* TypeClient */ int type);
-
-        // std::vector<std::string> get_nicknames(void);
+        bool changeClientMode(Client& client, int type);
         void nameReply(Client &client);
-        // void removeClient(Client &client);
-        // void sendInChannel(std::string const &msg) const;
-
         bool emptyClients(void);
-
-       const Client &getAdmin() const;
-
+        const Client &getAdmin() const;
         void setInviteOnly(bool mode);
         bool isInviteOnly(void);
         bool isOperator(Client& client) const;
@@ -58,12 +40,9 @@ class Channel
         void setTopicMode(bool mode);
         bool isTopicModeOn() const;
         Client * getClientNick(const std::string& nickname);
-
         bool isAdmin(const Client& client) const;
         void sendMsg(Client &client, const std::string &msg, const std::string& cmd);
-
         std::string getTopic(void) const;
-
         void setTopic(const std::string& topic);
 
     private:
@@ -76,7 +55,6 @@ class Channel
         bool _inviteOnly;
         bool _topicMode;
         
-
     public:
         std::string _name;
         std::string _pass;

@@ -13,7 +13,6 @@ void    Ping::execute(Client& client, std::vector<std::string> args)
         client.reply(ERR_NEEDMOREPARAMS(client.getNICK(), "PING"));
         return;
     }
-
-    // client.write(RPL_PING(client.getPrefix(), args.at(0)));
-    client.sendMsg(RPL_PING(client.getPrefix(), args[0])); // TODO veranayel 
+    
+    client.sendMsg(RPL_PING(client.getPrefix(), args[0]));
 }

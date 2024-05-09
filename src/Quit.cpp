@@ -16,8 +16,5 @@ void    Quit::execute(Client& client, std::vector<std::string> args)
 
     client.sendMsg(RPL_QUIT(client.getPrefix(), reason));
     client.leavALLChannels();
-    // std::cout << "_srv channles = " << _channels.size() << std::endl;
     _srv.checkForCloseCannel();
-    // close(client.getFd());
-    // FD_CLR(C->getFd(), &_server->Desc._READ_fds);
 }
