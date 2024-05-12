@@ -1,29 +1,39 @@
 #include "EventManager.hpp"
-
-fd_set          EventManager::_read;
-fd_set          EventManager::_write;
+#include <iostream>
+fd_set          EventManager::_readMaster;
+fd_set          EventManager::_writeMaster;
 
 void EventManager::start() {
-    FD_ZERO(&_read);
-    FD_ZERO(&_write);
+    FD_ZERO(&_readMaster);
+    FD_ZERO(&_writeMaster);
 }
 
 void EventManager::addWriteFd(int fd)
 {
-    FD_SET(fd, &_write);
+    FD_SET(fd, &_writeMaster);
 };
 
 void EventManager::addReadFd(int fd)
 {
-    FD_SET(fd, &_read);
+    FD_SET(fd, &_readMaster);
 };
 
 void EventManager::delWriteFd(int fd)
 {
-    FD_CLR(fd, &_write);
+    FD_CLR(fd, &_writeMaster);
 };
 
 void EventManager::delReadFd(int fd)
 {
-    FD_CLR(fd, &_read);
+    FD_CLR(fd, &_readMaster);
+};
+
+fd_set *EventManager::getWriteFdSet()
+{
+    return (&_writeMaster);
+};
+
+fd_set *EventManager::getReadFdSet()
+{
+    return (&_readMaster);
 };

@@ -4,7 +4,7 @@
 
 bool validArgv(std::string port, std::string password)
 {
-    if (password.empty() || password.length() < 8)
+    if (password.empty() ) //|| password.length() < 1
     {
         std::cout << "Error: password must contain at least 8 symbols!" << std::endl;
         return false;
@@ -42,10 +42,6 @@ std::string my_to_string(size_t num)
     return (str.str());
 };
 
-
-//*******************************************************************
-
-
 std::vector<std::string>  split(const std::string &str, char c)
 {
     std::stringstream test(str);
@@ -61,6 +57,3 @@ std::vector<std::string>  split(const std::string &str, char c)
     }
     return (seglist);
 }
-
-
-//**************************************************************************

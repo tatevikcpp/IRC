@@ -2,21 +2,7 @@
 #include "utils.hpp"
 #include <fcntl.h>
 #include "Command.hpp"
-
-// #include <netinet/in.h>
-// struct in_addr
-// {
-//     unsigned long s_addr;  // load with inet_aton()
-// };
-
-// struct sockaddr_in
-// {
-//     short            sin_family;   // e.g. AF_INET
-//     unsigned short   sin_port;     // e.g. htons(3490)
-//     struct in_addr   sin_addr;     // see struct in_addr, below
-//     char             sin_zero[8];  // zero this if you want to
-// };
-
+#include "EventManager.hpp"
 
 IRC_Server::IRC_Server(const char *port, const char *password)
 {
@@ -34,7 +20,6 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["PING"] = new Ping(*this);
     _commands["PONG"] = new Pong(*this);
     _commands["JOIN"] = new Join(*this);
-    // _commands["PART"] = new Part(*this);
     _commands["KICK"] = new Kick(*this);
     _commands["MODE"] = new Mode(*this);
     _commands["INVITE"] = new Invite(*this);
@@ -43,11 +28,10 @@ IRC_Server::IRC_Server(const char *port, const char *password)
     _commands["TOPIC"] = new Topic(*this);
     _commands["CAP"] = new Cap(*this);
     _commands["NOTICE"] = new Notice(*this);
-    // this->_command = new Command(this);
-
+    _commands["WHO"] = new Who(*this);
 }
 
-IRC_Server::~IRC_Server(/* *this */)
+IRC_Server::~IRC_Server()
 {
 
 }
@@ -56,19 +40,6 @@ std::string IRC_Server::getPASS(void)
 {
     return (this->_password);
 }
-
-// Client * IRC_Server::getClient(const std::string& nick) // TODO esim
-// {
-//     std::map<std::string, *>::iterator it = this->_channels.find(nick);
-    
-//     if (it != this->_channels.end())
-//     {
-//         // std::cout << "lala" << std::endl;
-//         return (it->second);  // TODO
-//     }
-
-//     return NULL;
-// }
 
 
 Client* IRC_Server::getClient(const std::string& nick)
@@ -88,7 +59,7 @@ Client* IRC_Server::getClient(const std::string& nick)
 }
 
 
-Channel * IRC_Server::getChannel(const std::string& name) // TODO erevi :/
+Channel * IRC_Server::getChannel(const std::string& name)
 {
     std::map<std::string, Channel *>::iterator it = this->_channels.find(name);
     if (it != this->_channels.end())
@@ -98,7 +69,7 @@ Channel * IRC_Server::getChannel(const std::string& name) // TODO erevi :/
     return (NULL);
 }
 
-bool IRC_Server::checkNickname(const std::string& nick) //TODO  std::string offff
+bool IRC_Server::checkNickname(const std::string& nick)
 {
     std::map<std::string, int>::iterator it = this->_nickname.find(nick);
     if (it == _nickname.end())
@@ -108,18 +79,16 @@ bool IRC_Server::checkNickname(const std::string& nick) //TODO  std::string offf
     return true;
 }
 
-void IRC_Server::changeNickname(Client &client, const std::string& newNick) //TODO strategia chka :D  
+void IRC_Server::changeNickname(Client &client, const std::string& newNick)
 {
     if (this->_clients.find(client._fd) != this->_clients.end())
     {
         this->_clients[client._fd]->setNICK(newNick);
     }
-    //esle, esim ?
 }
 
 void IRC_Server::addChannel(Channel &channel)
 {
-
     if (this->_channels.insert(std::make_pair(channel._name, &channel)).second == false)
     {
         std::cout << "alredy exist\n";
@@ -135,6 +104,11 @@ void IRC_Server::delChannel(Channel *channel)
     }
 }
 
+void IRC_Server::addClientToDelete(Client *client)
+{
+    this->_clientToDelete.push_back(client);
+}
+
 void IRC_Server::addClientToChannel(const std::string& name, Client &client)
 {
     std::map<std::string, Channel *>::iterator  it = this->_channels.find(name);
@@ -148,12 +122,8 @@ Channel* IRC_Server::createChannel(const std::string& name, const std::string& p
 {
     Channel *new_channel = new Channel(name, pass, &client);
     this->addChannel(*new_channel);
-    // this->_channels.insert(std::pair<std::string, Channel *>(new_channel->getName(), new_channel));
-    // client._channels.insert(std::pair<std::string,std::pair<Channel*, TypeClient> >((new_channel->getName(), (new_channel, Admin))); TODO
     return (new_channel);
 }
-
-// server mekic aveli clientneri hamar
 
 void *get_in_addr(struct sockaddr *sa)
 {
@@ -184,40 +154,28 @@ void IRC_Server::checkForCloseCannel(void)
     }
 }
 
-
-
-
-
+void IRC_Server::deleteClient(Client *client)
+{
+    this->_clients.erase(client->getFd());
+    delete client;
+    this->_clients.erase(100);
+}
 
 int IRC_Server::start(void)
 {
-    fd_set read;    // read file descriptor list
-    fd_set write;    // read file descriptor list
     fd_set read_fds;  // temp file descriptor list for select()
     fd_set write_fds;  // temp file descriptor list for select()
-    // int _fdmax;        // maximum file descriptor number
-
-    // int listener;     // listening socket descriptor
-    // int _newfd;        // newly accept()ed socket descriptor
     struct sockaddr remoteaddr; // client address
     socklen_t addrlen;
 
     char buf[256];    // buffer for client data
     int nbytes;
 
-    // char remoteIP[INET6_ADDRSTRLEN];
-
     int yes = 1;        // for setsockopt() SO_REUSEADDR, below
-    // int i, j, rv;
-     // reference Client(Server) ++this->_clients
     int rv;
 
     struct addrinfo hints, *ai, *p;
-
-    FD_ZERO(&read);    // clear the read and temp sets
-    FD_ZERO(&write);    // clear the read and temp sets
     FD_ZERO(&read_fds);
-    FD_ZERO(&write_fds);
 
     // get us a socket and bind it
     memset(&hints, 0, sizeof hints);
@@ -267,35 +225,28 @@ int IRC_Server::start(void)
         exit(3);
     }
 
-    // add the listener to the read set 
-    FD_SET(this->_listener, &read);
+    // add the listener to the master set 
+    EventManager::start();
+    EventManager::addReadFd(this->_listener);
 
     // keep track of the biggest file descriptor
     this->_fdmax = this->_listener + 1; // so far, it's this one
 
-    // main loop
     for(;;) 
     {
-        read_fds = read; // copy it
-        write_fds = write; // copy it
-        // _max_fd = _clients.rbegin()->first + 1;
-        _select_fd = select(_fdmax, &read_fds, &write_fds, NULL, NULL); //TODO ogtagorcel write_fds -y
-        std::cout << "_select_fd = " << _select_fd << std::endl;
+        read_fds = *EventManager::getReadFdSet(); // copy it
+        write_fds = *EventManager::getWriteFdSet(); // copy it
+        _select_fd = select(_fdmax, &read_fds, &write_fds, NULL, NULL);
+        // std::cout << "_select_fd= " << _select_fd <<  std::endl;
         if (_select_fd == -1)
         {
-            std::cout << "stex select" << std::endl;
             perror("select");
-            exit(4);
         }
         else if (_select_fd)
         {
             // run through the existing connections looking for data to read
             if (FD_ISSET(this->_listener, &read_fds)) 
             {
-                // we got one!!
-                    // TODO erb avelanum em nor clientner, miacnum enq serverin
-                    // handle new connections
-
                 addrlen = sizeof remoteaddr;
                 _newfd = accept(this->_listener,
                     (struct sockaddr *)&remoteaddr,
@@ -314,32 +265,25 @@ int IRC_Server::start(void)
                         std::cout << "Error: setting client fd to non-blocking mode failed!" << std::endl;
                     }
 
-                    FD_SET(_newfd, &read);
-                        // add to read set
+                    EventManager::addReadFd(_newfd);
                     if (_newfd >= _fdmax) 
-                    {    // keep track of the max
+                    {
                         _fdmax = _newfd + 1;
                     }
+                    std::cout << "new user = " << _newfd << std::endl;
                     Client* tmp = new Client(_newfd, remoteaddr);
-                    this->_clients[_newfd] = tmp;  // adding client to server
-                    // this->addChannel()
-                    // this->addClientToChannel("name", tmp); // TODO porcnakan
-                    std::cout << "new Client(_newfd, remoteaddr); = " << _newfd << std::endl;
+                    this->_clients[_newfd] = tmp;
                 }
             }
             for(std::map<int, Client *>::iterator it = this->_clients.begin();
                    _select_fd != 0 && it != this->_clients.end() ; ++it)
             {
-                // std::cout << "loop" << std::endl;
                 if (FD_ISSET(it->first, &read_fds))
                 {
                     _select_fd--;
-                    // we got one!!
-                    // handle data from a client
                     if ((nbytes = recv(it->first, buf, sizeof buf, 0)) <= 0)
                     {
-                        // TODO heracnel clientin ir irer@ evs
-                        // got error or connection closed by client
+                        std::cout << "nbytes= " << nbytes << std::endl;
                         if (nbytes == 0)
                         {
                             std::map<int, Client *>::iterator clientIt = _clients.find(it->first);
@@ -349,74 +293,66 @@ int IRC_Server::start(void)
                             }
                             // connection closed
                             printf("selectserver: socket %d hung up\n", it->first);
-                            // close(it->first);
                         } 
                         else
                         {
                             perror("recv");
                         }
 
-                        close(it->first); // bye!
-                        FD_CLR(it->first, &read); // remove from read set
-                        FD_CLR(it->first, &write);
+                        // close(it->first);
+                        // EventManager::delReadFd(it->first);
+                        // EventManager::delWriteFd(it->first);
+                        
                     } 
                     else
                     {
-                        std::cout << "sending message" << std::endl;
-                        it->second->_buffer.assign(buf, nbytes); // TODO review
-                        // int i = 0;
-                        // while(buf[i])
-                        // {
-                        //     it->second->_buffer += buf[i];
-                        //     // std::cout << " it->second->_buffer "<< it->second->_buffer << std::endl;
-                        //     i++; 
-                        // }
+                        std::cout << "nbytes = " << nbytes << std::endl;
+                        it->second->_buffer.append(buf, nbytes);
 
                         if (it->second->_buffer.find('\n') != std::string::npos)
                         {
-                            // it->second->setInputBuffer(it->second->_buffer);//TODO kaskaceli => veranayel
+                            std::cout << "_buffer = " << it->second->_buffer << std::endl;
                             it->second->splitbuffer();
                             it->second->setArguments();
-                            std::cout << it->second->getCommand() << std::endl;
-                            it->second->print_vector();
                             if (it->second->getCommand().empty() == true)
                             {
+                                it->second->_buffer.clear();
                                 continue;
                             }
                             std::cout << "it->second->getCommand() = " << it->second->getCommand() << std::endl;
-                            if (_commands.find(it->second->getCommand()) == _commands.end()) {
-                                std::cout << "ERR_UNKNOWNCOMMAND\n";
+                            if (_commands.find(it->second->getCommand()) == _commands.end()) 
+                            {
                                 it->second->reply(ERR_UNKNOWNCOMMAND(it->second->getNICK(), it->second->getCommand()));
+                                it->second->_buffer.clear();
                                 continue;
                             }
+
+                            it->second->_buffer.clear();
                             this->_commands[it->second->getCommand()]->execute(*it->second, it->second->getArguments());
-                            // while (!it->second->getArguments().empty() || !it->second->getCommand().empty())
-                            // {
-                            //     // std::cout << "face :D" << std::endl;
-                            //     // this->_command->commandHandler(it->second);
-                            //     it->second->setArguments();
-                            //     // exit(1);
-                            //     // std::cout << "return " << std::endl;
-                            // }
 
                         }
-                        FD_SET(it->first, &write);
-                        std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
-                        while (itChannel != _channels.end()) 
-                        {
-                            itChannel->second->print();
-                            itChannel++;
-                        }
+                        // std::map<std::string, Channel *>::iterator itChannel = _channels.begin();
+                        // while (itChannel != _channels.end()) 
+                        // {
+                        //     itChannel->second->print();
+                        //     itChannel++;
+                        // }
                     }
                 }
                 else if (FD_ISSET(it->first, &write_fds))
                 {
-                    it->second->sending();
-                    FD_CLR(it->first, &write);
+                    it->second->sendLalala();
+                    EventManager::delWriteFd(it->first);
                 }
-                    // _select_fd--;
-                // TODO  if (FD_ISSET(it->first, &write_fds)) _select_fd--
+
             }
+            // TODO QCEL FUNKICIA MECH
+            for (size_t i = 0; i < _clientToDelete.size(); ++i)
+            {
+                std::cout << " _clientToDelete[i]->getNICK()" << _clientToDelete[i]->getNICK() << std::endl;;
+                deleteClient(_clientToDelete[i]);
+            }
+            _clientToDelete.clear();
         }
     }
     return 0;

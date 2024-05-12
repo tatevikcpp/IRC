@@ -4,9 +4,9 @@ Topic::Topic(IRC_Server& srv) : Command(srv) {}
 
 Topic::~Topic() {}
 
-// syntax: Topic <channel> <client> :[<message>]
+// syntax: Topic <channel> :[<message>]
 
-void    Topic::execute(Client& client, std::vector<std::string> args) //TODO piti vor
+void    Topic::execute(Client& client, std::vector<std::string> args)
 {
     if (!client.isRegistered())
     {
@@ -47,20 +47,32 @@ void    Topic::execute(Client& client, std::vector<std::string> args) //TODO pit
 
     if (args.size() == 1)
     {
-
-        std::string topic = channel->_topic;
-        if (topic.empty())
+        if (client._isColon)
         {
-            client.sendMsg(RPL_NOTOPIC(channelName) + static_cast<char>(1));
-        }        
-        else 
+            channel->_topic = client.getMSG();
+            if (channel->_topic.empty())
+            {
+                client.sendMsg(RPL_NOTOPIC(channelName) + static_cast<char>(1));
+            }        
+            else 
+            {
+                client.sendMsg(RPL_TOPIC(channelName + static_cast<char>(1), channel->_topic));
+            }
+        } 
+        else
         {
-            client.sendMsg(RPL_TOPIC(channelName + static_cast<char>(1), topic));
-        }          
+            if (channel->_topic.empty())
+            {
+                client.sendMsg("channel topic is empty");
+            }        
+            else 
+            {
+                client.sendMsg("channel topic is: " + channel->_topic);
+            }
+        }    
     }
     else
     {
-        std::string topic = args[1];
-        channel->_topic = topic;
+        client.sendMsg(ERR_NEEDMOREPARAMS(client.getNICK(), "TOPIC"));
     }
 }

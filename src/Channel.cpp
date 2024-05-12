@@ -1,21 +1,22 @@
 #include "Channel.hpp"
 #include "Numeric_and_error_replies.hpp"
 #include <algorithm>
+#include "EventManager.hpp"
 
-void Channel::print() const {
-    std::map<int, Client *>::const_iterator it = _clients.cbegin();
-    std::cout << "-----------------------------------------------------\n";
-    std::cout << _name << std::endl; 
-    std::cout << "size = " << this->_clients.size() << std::endl;
-    while (it != _clients.end())
-    {
-        std::string name = it->second->getNICK();
-        std::cout << name << ", isAdmin = " << this->isAdmin(*it->second) << ", isOperator = " << this->isOperator(*it->second) << std::endl;
-        it++;
-    }
+// void Channel::print() const {
+//     std::map<int, Client *>::const_iterator it = _clients.cbegin();
+//     std::cout << "-----------------------------------------------------\n";
+//     std::cout << _name << std::endl; 
+//     std::cout << "size = " << this->_clients.size() << std::endl;
+//     while (it != _clients.end())
+//     {
+//         std::string name = it->second->getNICK();
+//         std::cout << name << ", isAdmin = " << this->isAdmin(*it->second) << ", isOperator = " << this->isOperator(*it->second) << std::endl;
+//         it++;
+//     }
 
-    std::cout << "\n-----------------------------------------------------\n";
-};
+//     std::cout << "\n-----------------------------------------------------\n";
+// };
 
 
 
@@ -24,9 +25,6 @@ Channel::Channel(const std::string& name, const std::string& pass, Client *clien
     if (client)
         this->joinClient(*client);
     this->_limit = 0;
-//     this->_name = name;
-//     this->_pass = pass;
-
     this->_inviteOnly = false;
     this->_topicMode = true;
 }
@@ -50,47 +48,23 @@ void Channel::sendMsg(Client &client, const std::string &msg, const std::string&
     }    
 }
 
-// std::vector<std::string>    Channel::get_nicknames()
-// {
-//     std::vector<std::string> nicknames;
-
-//     client_iterator it_b = _clients.begin();
-//     client_iterator it_e = _clients.end();
-
-//     while (it_b != it_e)
-//     {
-//         Client* client = *it_b;
-
-//         std::string nick = (client == _admin ? "@" : "") + client->get_nickname();
-//         nicknames.push_back(nick);
-
-//         it_b++;
-//     }
-
-//     return nicknames;
-// }
-
-void Channel::nameReply(Client &client) //TODO "@" -i hamar
-{
-    // std::cout << "Channel::nameReply" << std::endl;
-    // // sending TOPIC to new user    
-    std::string topic = this->getTopic();
-    if (topic.empty())            
+void Channel::nameReply(Client &client)
+{   
+    if (_topic.empty())            
         client.sendMsg(RPL_NOTOPIC(_name + static_cast<char>(1)));
     else            
-        client.sendMsg(RPL_TOPIC(_name + static_cast<char>(1), topic));
+        client.sendMsg(RPL_TOPIC(_name + static_cast<char>(1), _topic));
+
     // sending channal's users list to new user
     std::string nickList;
-    std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
-    if (it != _clients.end())
+    std::map<int, Client *>::iterator it = this->_clients.begin();
+    for(; it != this->_clients.end(); ++it)
     {
-        // std::string prefix = (_clients[i] == _admin) ? "@" : "+";
-        // nickList += prefix + _clients[i]->getNICK() + "  ";
+        std::string prefix = this->isAdmin(*it->second) == true ? "@" : "+";
 
-        std::string prefix = this->isAdmin(client) == true ? "@" : "+";
-        std::cout << "prefix " << prefix << std::endl;
-        nickList += prefix + client.getNICK() + "  ";
+        nickList += prefix + it->second->getNICK() + "  ";
     }
+
     client.sendMsg(RPL_NAMREPLY(client.getNICK(), _name + static_cast<char>(1), nickList));
     client.sendMsg(RPL_ENDOFNAMES(client.getNICK(), _name + static_cast<char>(1)));
 }
@@ -105,7 +79,8 @@ void Channel::setTopic(const std::string& topic)
     _topic = topic;
 }
 
-void Channel::joinClient(Client &client) //_clients[i]->sending(RPL_JOIN(C->getPrefix(), _channelName));
+
+void Channel::joinClient(Client &client)//_clients[i]->sending(RPL_JOIN(C->getPrefix(), _channelName));
 {
     if (this->_clients.find(client._fd) != this->_clients.end())
     {
@@ -117,20 +92,15 @@ void Channel::joinClient(Client &client) //_clients[i]->sending(RPL_JOIN(C->getP
     }
     this->_clients[client._fd] = &client;
     this->_primary.push_back(&client);
-    // sendInChannel(RPL_JOIN(client.getPrefix(), channel->getName()));
-    // std::map<int, Client *>::iterator it = this->_clients.begin();
-    // for(; it != this->_clients.end(); ++it)
-    //     it->second->sendMsg(RPL_JOIN(client.getPrefix(), _name));
     client.joinToChannel(*this);
-}
 
-void Channel::sendInChannel(std::string const &msg) const
-{
-     std::map<int, Client *>::const_iterator it = this->_clients.cbegin();
-
+    std::map<int, Client *>::iterator it = this->_clients.begin();
     for(; it != this->_clients.end(); ++it)
-        it->second->sending(msg);
-};
+    {
+        it->second->sendMsg(RPL_JOIN(client.getPrefix(), _name));
+    }
+    this->nameReply(client);
+}
 
 void Channel::deleteClient(Client &client)
 {
@@ -144,7 +114,7 @@ void Channel::deleteClient(Client &client)
     std::list<Client *>::iterator itPrimary = std::find(this->_primary.begin(), this->_primary.end(), &client);
     if (itPrimary != this->_primary.end())
     {
-        this->_primary.erase(itPrimary); // TODO lav kashxati
+        this->_primary.erase(itPrimary);
     }
     std::list<Client *>::iterator itOperator = std::find(this->_listOperator.begin(), this->_listOperator.end(), &client);
     if (itOperator != this->_listOperator.end())
@@ -165,7 +135,6 @@ void Channel::deleteClient(Client &client)
             this->_primary.pop_front();
         }
     }
-    // client.leaveChannel(this->getName());
 }
 
 bool Channel::changeClientMode(Client& client, /* TypeClient */ int type)
@@ -189,21 +158,20 @@ bool Channel::changeClientMode(Client& client, /* TypeClient */ int type)
     return false;
 }
 
-// void Channel::sending(Client* C, const std::string& msg/* , const std::string& cmd */) //TODO
-// {
-//     std::map<int, Client *>::const_iterator it = this->_clients.cbegin(); // TODO nayel !!
+void Channel::sending(Client* C, const std::string& msg)
+{
+    std::map<int, Client *>::const_iterator it = this->_clients.cbegin();
 
-//     while (it != this->_clients.cend())
-//     {
-//         if (C->_fd != it->first)
-//         {
-//             _m
-//             // if (send(it->first, msg.c_str(), msg.size(), 0) < 0)
-//             //     throw std::runtime_error("Error while sending a message to a client!");
-//         }
-//         it++;
-//     }
-// }
+    while (it != this->_clients.cend())
+    {
+        if (C->_fd != it->first)
+        {
+            EventManager::addWriteFd(it->first);
+            it->second->appendResponse(msg);
+        }
+        it++;
+    }
+}
 
 Client* Channel::getClientNick(const std::string& nickname)
 {
@@ -288,7 +256,7 @@ void Channel::setTopicMode(bool mode)
 bool Channel::isTopicModeOn() const
 {
     return (this->_topicMode);
-};
+}
 
 void Channel::set_pass(const std::string& pass)
 {
@@ -327,30 +295,6 @@ bool Channel::emptyClients(void)
 {
     return _clients.empty();
 }
-
-// void Channel::removeClient(Client &client) // TODO offff
-// {
-//     std::map<int, Client *>::iterator it = this->_clients.find(client.getFd());
-//     if (it == this->_clients.end())
-//         return ;
-//     std::map<std::string, std::pair<Channel*, TypeClient> >::iterator it_c = client._channels.find(this->getName());
-//     if (it_c != client._channels.end())
-//     {
-//         if (this->_clients.size() == 1)
-//         {
-//             this->_clients.erase(client.getFd());
-//             //TODO jnjel map -y???
-//         }
-//         if (it_c->second.second == Admin)
-//         {
-//             this->_clients.erase(client.getFd());
-//             this->_clients.begin()->second._channels->second.second = Admin;
-//         }
-//     }
-
-//     // this->_clients.erase(client.getFd());
-// }
-
 
 bool Channel::isInChannel(Client& client)
 {

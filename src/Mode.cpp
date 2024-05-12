@@ -10,7 +10,6 @@ Mode::~Mode() {}
 void    Mode::execute(Client& client, std::vector<std::string> args)
 {
     // hanling errors
-
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
@@ -23,9 +22,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         return ;
     }
     
-    // std::string target = args.at(0);
     std::string channelName = args[0];
-
     Channel* channel = _srv.getChannel(channelName);
     if (!channel)
     {
@@ -68,7 +65,7 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             client.sendMsg(RPL_MODE(client.getPrefix(), channelName, mode));
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
-         else if (mode == "k" || mode == "+k" || mode == "-k")
+        else if (mode == "k" || mode == "+k" || mode == "-k")
         {
             std::string key;
             if (args.size() > 2)
@@ -146,10 +143,15 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
                     return ;
                 }
 
-                int new_limit = std::atoi(args[1].c_str());
+                int new_limit = std::atoi(args[2].c_str());
                 if (new_limit < 1)
                 {
                     client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :limit must be greater than 0"));
+                    return;
+                }
+                if ((size_t)new_limit < channel->get_size())
+                {
+                    client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :number of clients is already greater than limit"));
                     return;
                 }
                 channel->setChannelLimit(new_limit);
@@ -161,11 +163,6 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
             
             client.reply(RPL_CHANNELMODEIS(channelName, channelName + static_cast<char>(1), mode));
         }
-        // else if (mode == "b")
-        // {
-        //     // do nothink to prevent KVirc error message
-        //     DEBUGGER();
-        // }
         else
         {
             client.reply(ERR_UNKNOWNMODE(client.getNICK(), mode, " :is unknown mode char to me"));
@@ -173,7 +170,3 @@ void    Mode::execute(Client& client, std::vector<std::string> args)
         }
     }
 }
-
-
-
-// MODE #foobar +o bunnyMO

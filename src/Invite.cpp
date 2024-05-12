@@ -4,13 +4,11 @@ Invite::Invite(IRC_Server& srv) : Command(srv) {}
 
 Invite::~Invite() {}
 
-void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getChannel(channelName) == NULL ?
+void Invite::execute(Client& client, std::vector<std::string> args)
 {
-    // std::cout << "INVITE execute" << std::endl;
     if (!client.isRegistered())
     {
         client.reply(ERR_NOTREGISTERED(client.getNICK()));
-
         return ;
     }
 
@@ -64,5 +62,4 @@ void Invite::execute(Client& client, std::vector<std::string> args) // _srv.getC
     }
 
     channel->joinClient(*client_inv);
-    channel->nameReply(*client_inv);
 }

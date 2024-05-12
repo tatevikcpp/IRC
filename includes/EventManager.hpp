@@ -16,14 +16,16 @@ class EventManager
 {
     EventManager();
     ~EventManager();
+    public:
+        static void start();
 
-    void start();
-
-    static void addWriteFd(int fd);
-    static void delWriteFd(int fd);
-    static void addReadFd(int fd);
-    static void delReadFd(int fd);
-
-    static fd_set _read;    // read file descriptor list
-    static fd_set _write;    // read file descriptor list
+        static void addWriteFd(int fd);
+        static void delWriteFd(int fd);
+        static void addReadFd(int fd);
+        static void delReadFd(int fd);
+        static fd_set *getWriteFdSet();
+        static fd_set *getReadFdSet();
+    private:
+        static fd_set _readMaster;    // read file descriptor list
+        static fd_set _writeMaster;    // read file descriptor list
 };
